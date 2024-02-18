@@ -45,8 +45,8 @@ def get_channels():
         l.append(dict(chan))
 
     for i in l:
-        i['channel_id'] = i['channel_id']
-        i['server_id'] = i['server_id']
+        i["channel_id"] = i["channel_id"]
+        i["server_id"] = i["server_id"]
 
     return l
 
@@ -230,9 +230,9 @@ def register_pickup(match):
             1 / (1 + 10 ** ((beta_rank - alpha_rank) / 400)),
             1 / (1 + 10 ** ((alpha_rank - beta_rank) / 400)),
         ]
-        if match.winner == 'alpha':
+        if match.winner == "alpha":
             scores = [1, 0]
-        elif match.winner == 'draw':
+        elif match.winner == "draw":
             scores = [0.5, 0.5]
         else:
             scores = [0, 1]
@@ -246,10 +246,10 @@ def register_pickup(match):
         if match.alpha_team and match.beta_team:
             if player in match.alpha_team:
                 team_num = 0
-                team = 'alpha'
+                team = "alpha"
             elif player in match.beta_team:
                 team_num = 1
-                team = 'beta'
+                team = "beta"
 
         if match.ranked and match.winner and team:
             c.execute(
@@ -258,7 +258,7 @@ def register_pickup(match):
             )
 
             # if we need to calibrate this player add additional rank gain/loss boost
-            rank_k = match.pickup.channel.cfg['ranked_multiplayer']
+            rank_k = match.pickup.channel.cfg["ranked_multiplayer"]
             c.execute(
                 "SELECT wins, loses, streak, is_seeded FROM channel_players WHERE channel_id = ? AND user_id = ?",
                 (match.pickup.channel.id, player.id),
@@ -269,7 +269,7 @@ def register_pickup(match):
             is_ranked = True
             rank_change = int(rank_k * (scores[team_num] - expected_scores[team_num]))
             if (
-                match.pickup.channel.cfg['ranked_calibrate']
+                match.pickup.channel.cfg["ranked_calibrate"]
                 and wins + loses < 8
                 and not is_seeded
             ):
@@ -362,7 +362,7 @@ def get_ranks(channel, user_ids):
     d = dict()
     c.execute(
         "SELECT user_id, rank FROM channel_players WHERE channel_id = ? AND user_id in ({seq})".format(
-            seq=','.join(['?'] * len(user_ids))
+            seq=",".join(["?"] * len(user_ids))
         ),
         (channel.id, *user_ids),
     )
@@ -372,7 +372,7 @@ def get_ranks(channel, user_ids):
             d[user_id] = rank
     for user_id in user_ids:
         if user_id not in d.keys():
-            d[user_id] = channel.cfg['initial_rating'] or 1400
+            d[user_id] = channel.cfg["initial_rating"] or 1400
     return d
 
 
@@ -496,11 +496,11 @@ def top(channel_id, timegap=False, pickup=False):
     l = c.fetchall()
     if len(l):
         top = ["{0}: {1}".format(i[0], i[1]) for i in l]
-        return ', '.join(top)
+        return ", ".join(top)
     return None
 
 
-def noadd(channel_id, user_id, user_name, duratation, author_name, reason=''):
+def noadd(channel_id, user_id, user_name, duratation, author_name, reason=""):
     c.execute(
         "SELECT * FROM bans WHERE user_id = ? AND channel_id = ? AND active = 1",
         (user_id, channel_id),
@@ -601,7 +601,7 @@ def check_memberid(channel_id, user_id):  # check on bans and phrases
         seconds_left = int(ban[1] - (time() - ban[0]))
         if seconds_left > 0:
             timeleft = timedelta(seconds=seconds_left)
-            if ban[2] != '':
+            if ban[2] != "":
                 ban[2] = " Reason : {0}".format(ban[2])
             return (
                 True,
@@ -695,9 +695,7 @@ def save_config(channel_id, cfg, pickups):
 
 def update_channel_config(channel_id, variable, value):
     c.execute(
-        "UPDATE OR IGNORE channels SET \"{0}\" = ? WHERE channel_id = ?".format(
-            variable
-        ),
+        'UPDATE OR IGNORE channels SET "{0}" = ? WHERE channel_id = ?'.format(variable),
         (value, channel_id),
     )
     conn.commit()
@@ -705,7 +703,7 @@ def update_channel_config(channel_id, variable, value):
 
 def update_pickup_config(channel_id, pickup_name, variable, value):
     c.execute(
-        "UPDATE OR IGNORE pickup_configs SET \"{0}\" = ? WHERE channel_id = ? and pickup_name = ?".format(
+        'UPDATE OR IGNORE pickup_configs SET "{0}" = ? WHERE channel_id = ? and pickup_name = ?'.format(
             variable
         ),
         (value, channel_id, pickup_name),
