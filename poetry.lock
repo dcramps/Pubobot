@@ -227,13 +227,14 @@ files = [
 ]
 
 [[package]]
-name = "pyreadline"
-version = "2.1"
-description = "A python implmementation of GNU readline."
+name = "pyreadline3"
+version = "3.4.1"
+description = "A python implementation of GNU readline."
 optional = false
 python-versions = "*"
 files = [
-    {file = "pyreadline-2.1.zip", hash = "sha256:4530592fc2e85b25b1a9f79664433da09237c1a270e4d78ea5aa3a2c7229e2d1"},
+    {file = "pyreadline3-3.4.1-py3-none-any.whl", hash = "sha256:b0efb6516fd4fb07b45949053826a62fa4cb353db5be2bbb4a7aa1fdd1e345fb"},
+    {file = "pyreadline3-3.4.1.tar.gz", hash = "sha256:6f3d1f7b8a31ba32b73917cefc1f28cc660562f39aea8646d30bd6eff21f7bae"},
 ]
 
 [[package]]
@@ -379,4 +380,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "7292498e7bf8a46d7f34b033df565d029100d1b5226f2d6c78fbe1174a917d4a"
+content-hash = "f92f327f28c8c9914dafe1d8433b833a3b036bbd682ed4ead47ed4923fc7e97e"

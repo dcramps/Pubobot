@@ -12,7 +12,7 @@ pubobot = "pubobot.__main__:main"
 [tool.poetry.dependencies]
 python = "^3.8"
 discord-py = "^1.7.3"
-pyreadline = { version = "^2.1", markers = "sys_platform == 'win32'"}
+pyreadline3 = {version = "^3.4.1", platform = "win32"}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.2.2"

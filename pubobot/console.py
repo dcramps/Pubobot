@@ -8,10 +8,7 @@ import os
 import datetime
 import time
 
-try:  # windows does not have readline module
-    import readline
-except ModuleNotFoundError:
-    import pyreadline as readline
+import readline
 
 from . import bot, client, config, stats3
 
