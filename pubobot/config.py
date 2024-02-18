@@ -1,7 +1,8 @@
 #!/usr/bin/python2
 # encoding: utf-8
 
-import shutil, os
+import shutil
+import os
 from importlib.machinery import SourceFileLoader
 from . import console, bot
 

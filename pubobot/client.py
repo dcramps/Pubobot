@@ -1,6 +1,8 @@
 #!/usr/bin/python2
 # encoding: utf-8
-import discord, traceback, time
+import discord
+import traceback
+import time
 from . import console, config, bot, stats3
 
 def init():

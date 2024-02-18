@@ -1,7 +1,10 @@
 ﻿#!/usr/bin/python2
 # encoding: utf-8
 
-import time, datetime, re, traceback, random
+import time
+import datetime
+import re
+import random
 from discord import errors
 from itertools import combinations
 from collections import OrderedDict
@@ -844,7 +847,7 @@ class Channel():
                 filtered_pickups = list(filter(lambda p: p.name.lower() in target_pickups, self.pickups))
 
         for pickup in filtered_pickups:
-            if not member.id in [i.id for i in pickup.players]:
+            if member.id not in [i.id for i in pickup.players]:
                 #check if pickup have blacklist or whitelist
                 whitelist_role = self.get_value("whitelist_role", pickup)
                 blacklist_role = self.get_value("blacklist_role", pickup)
@@ -1725,7 +1728,7 @@ class Channel():
         added = False
         for players in [i.players for i in self.pickups]:
             if member.id in [i.id for i in players]:
-                added = True;
+                added = True
                 break
         if not added:
             client.reply(self.channel, member, "You must be added first!")
@@ -1750,7 +1753,7 @@ class Channel():
 
         #return expire time if no time specified
         else:
-            if not member.id in scheduler.tasks.keys():
+            if member.id not in scheduler.tasks.keys():
                 client.reply(self.channel, member, "No !expire time is set. You will be removed on your AFK status.")
                 return
 
@@ -2094,7 +2097,7 @@ class Channel():
             for pickup in self.pickups:
                 if len(pickup.players) and (pickup.name in args or args == []):
                     for player in pickup.players:
-                        if not player in removed:
+                        if player not in removed:
                             removed.append(player)
                     pickup.players = []
                     active_pickups.remove(pickup)

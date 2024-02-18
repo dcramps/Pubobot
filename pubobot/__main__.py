@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # encoding: utf-8
-import time, asyncio, os
+import time
+import asyncio
+import os
 
 #my modules
 from . import console, config, bot, client, scheduler, stats3

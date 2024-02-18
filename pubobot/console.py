@@ -3,7 +3,10 @@
 
 from threading import Thread
 from multiprocessing import Queue
-import sys, os, datetime, time
+import sys
+import os
+import datetime
+import time
 
 try:  # windows does not have readline module
 	import readline

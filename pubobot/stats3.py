@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-import sqlite3, operator, re
+import sqlite3
 from datetime import timedelta
 from time import time
 from os.path import isfile
