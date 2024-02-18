@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "pubobot"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "GPL3"
+readme = "README.md"
+
+[tool.poetry.scripts]
+pubobot = "pubobot.__main__:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+discord-py = "^1.7.3"
+pyreadline = { version = "^2.1", markers = "sys_platform == 'win32'"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

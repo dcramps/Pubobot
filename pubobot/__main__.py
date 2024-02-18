@@ -5,12 +5,18 @@ import time, asyncio, os
 #my modules
 from . import console, config, bot, client, scheduler, stats3
 
-console.init()
-scheduler.init()
-bot.init()
-stats3.init()
-config.init()
-client.init()
+
+def main():
+    console.init()
+    scheduler.init()
+    bot.init()
+    stats3.init()
+    config.init()
+    client.init()
+
+    client.c.loop.create_task(bot_run())
+    client.run() #runs until ctrl+c
+
 
 async def bot_run(): #background thinking
 	while True:
@@ -25,7 +31,7 @@ async def bot_run(): #background thinking
 			await client.close()
 			print("QUIT NOW.")
 			os._exit(0)
-			
 
-client.c.loop.create_task(bot_run())
-client.run() #runs until ctrl+c
+
+if __name__ == "__main__":
+    main()
