@@ -10,7 +10,7 @@ try:  # windows does not have readline module
 except ModuleNotFoundError:
 	import pyreadline as readline
 
-from modules import bot, client, config, stats3
+from . import bot, client, config, stats3
 
 class ConsoleCompleter(object):  # Custom completer
 

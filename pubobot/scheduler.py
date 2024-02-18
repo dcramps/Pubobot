@@ -1,6 +1,6 @@
 import time
 
-from modules import bot, console
+from . import bot, console
 
 def init():
 	global tasks, next_task

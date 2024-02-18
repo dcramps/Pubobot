@@ -3,7 +3,7 @@
 
 import shutil, os
 from importlib.machinery import SourceFileLoader
-from modules import console, bot
+from . import console, bot
 
 def init(dirname=""):
 	global cfg

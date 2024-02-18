@@ -5,7 +5,7 @@ import time, datetime, re, traceback, random
 from discord import errors
 from itertools import combinations
 from collections import OrderedDict
-from modules import client, config, console, stats3, scheduler, utils
+from . import client, config, console, stats3, scheduler, utils
 
 max_expire_time = 6*60*60 #6 hours
 max_bantime = 30*24*60*60*12*3 #30 days * 12 * 3

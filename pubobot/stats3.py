@@ -5,7 +5,7 @@ from time import time
 from os.path import isfile
 from decimal import Decimal
 
-from modules import console
+from . import console
 
 # INIT
 version = 13

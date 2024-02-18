@@ -3,7 +3,8 @@
 import time, asyncio, os
 
 #my modules
-from modules import console, config, bot, client, scheduler, stats3
+from . import console, config, bot, client, scheduler, stats3
+
 console.init()
 scheduler.init()
 bot.init()

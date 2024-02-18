@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 # encoding: utf-8
 import discord, traceback, time
-from modules import console, config, bot, stats3
+from . import console, config, bot, stats3
 
 def init():
 	global ready, send_queue
