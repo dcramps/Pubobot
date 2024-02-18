@@ -259,9 +259,9 @@ class Match():
             team_ratings = ["", ""]
 
         if len(self.players) == 2:
-            return "{0} :fire:**VERSUS**:fire: {1}".format(alpha_str, beta_str)
+            return "{0} / {1}".format(alpha_str, beta_str)
         else:
-            return "{0} ❲{1}❳ {4}\r\n          :fire: **VERSUS** :fire:\r\n{2} ❲{3}❳ {5}".format(self.alpha_icon, alpha_str, self.beta_icon, beta_str, *team_ratings)
+            return "{0} ❲{1}❳ {4}\n{2} ❲{3}❳ {5}".format(self.alpha_icon, alpha_str, self.beta_icon, beta_str, *team_ratings)
 
     def _teams_picking_to_str(self):
         match_id_str = "**Match {0}**".format(self.id)
@@ -298,7 +298,7 @@ class Match():
                     "{0}. `{1}`".format(position, (player.nick or player.name).replace("`",""))
                 )
             unpicked_str = "[" + ", ".join(player_strs) + "]"
-        return "{0}\n{1} {2}\n          :fire:**VERSUS**:fire:\n{4} {3}\n\n__Unpicked__:\n{5}".format(match_id_str, self.alpha_icon, alpha_str, beta_str, self.beta_icon, unpicked_str)
+        return "{0}\n{1} {2}\n{4} {3}\n\n__Unpicked__:\n{5}".format(match_id_str, self.alpha_icon, alpha_str, beta_str, self.beta_icon, unpicked_str)
 
     def _startmsg_to_str(self):
         ipstr = self.pickup.channel.get_value("startmsg", self.pickup)
