@@ -3,19 +3,35 @@
 
 import shutil
 import os
-from importlib.machinery import SourceFileLoader
+
 from . import console, bot
 
 
-def init(dirname=""):
+class Config:
+    DISCORD_TOKEN = ""
+    BACKUP_TIME = 6
+    KEEP_BACKUPS = 5
+    COMMANDS_LINK = "https://link-to-commands"
+    HELPINFO = "A helpful message"
+    FIRST_INIT_MESSAGE = "Pickups enabled"
+
+
+def init(config_file="config.cfg"):
     global cfg
+    cfg = Config()
+    data = {}
 
     # load config
     try:
-        cfg = SourceFileLoader("cfg", "config.cfg").load_module()
+        with open(config_file, "r") as f:
+            exec(f.read(), data)
     except Exception as e:
         console.display("ERROR| ERROR PARSING config.cfg FILE!!! {0}".format(str(e)))
         console.terminate()
+
+    for k, v in data.items():
+        if hasattr(cfg, k):
+            setattr(cfg, k, v)
 
     # check if we need to update from previous stats system
     if os.path.isdir("channels"):

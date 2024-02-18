@@ -277,10 +277,7 @@ def run():
                 console.display("SYSTEM| logging in with token...")
                 c.loop.run_until_complete(c.start(config.cfg.DISCORD_TOKEN))
             else:
-                console.display("SYSTEM| logging in with username and password...")
-                c.loop.run_until_complete(
-                    c.start(config.cfg.USERNAME, config.cfg.PASSWORD)
-                )
+                raise NotImplemented("Username/password authentication not supported.")
             c.loop.run_until_complete(c.connect())
         except KeyboardInterrupt:
             console.display("ERROR| Keyboard interrupt.")

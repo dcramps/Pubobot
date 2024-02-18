@@ -65,18 +65,18 @@ class ConsoleCompleter(object):  # Custom completer
             return None
 
 
-def init():
+def init(log_dir="logs"):
     global thread, log, userinput_queue, alive
 
     alive = True
     # init log file
-    if not os.path.exists(os.path.abspath("logs")):
-        os.makedirs("logs")
-    log = open(
-        datetime.datetime.now().strftime("logs/log_%Y-%m-%d-%H:%M"),
-        "w",
-        encoding="utf-8",
+    if not os.path.exists(os.path.abspath(log_dir)):
+        os.makedirs(log_dir)
+
+    log_file = os.path.join(
+        log_dir, datetime.datetime.now().strftime("log_%Y-%m-%d-%H:%M")
     )
+    log = open(log_file, "w")
 
     userinput_queue = Queue()
 

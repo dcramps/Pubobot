@@ -2,6 +2,7 @@
 # encoding: utf-8
 import time
 import asyncio
+import argparse
 import os
 
 # my modules
@@ -9,11 +10,22 @@ from . import console, config, bot, client, scheduler, stats3
 
 
 def main():
-    console.init()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-c", "--config", default="config.cfg", help="configuration file"
+    )
+    parser.add_argument("-l", "--logs", default="logs", help="log directory")
+    parser.add_argument(
+        "-d", "--db", default="database.sqlite3", help="sqlite3 database"
+    )
+
+    args = parser.parse_args()
+
+    console.init(args.logs)
     scheduler.init()
     bot.init()
-    stats3.init()
-    config.init()
+    stats3.init(args.db)
+    config.init(args.config)
     client.init()
 
     client.c.loop.create_task(bot_run())

@@ -11,10 +11,10 @@ from . import console
 version = 13
 
 
-def init():
+def init(db_file="database.sqlite3"):
     global conn, c, last_match
-    dbexists = isfile("database.sqlite3")
-    conn = sqlite3.connect("database.sqlite3")
+    dbexists = isfile(db_file)
+    conn = sqlite3.connect(db_file)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
     if dbexists:
