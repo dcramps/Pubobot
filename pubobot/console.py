@@ -73,7 +73,7 @@ def init(log_dir="logs", enable_input=True):
     log_file = os.path.join(
         log_dir, datetime.datetime.now().strftime("log_%Y-%m-%d-%H:%M")
     )
-    log = open(log_file, "w")
+    log = open(log_file, "w", encoding="utf-8")
 
     userinput_queue = Queue()
 
