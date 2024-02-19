@@ -45,11 +45,11 @@ async def bot(tmp_path_factory):
     await background_task
 
 
-class Helper:
+class Messenger:
     def __init__(self, loop=None):
         self.loop = loop or asyncio.get_running_loop()
 
-    async def message(self, peek=False, timeout=0.5) -> discord.Message:
+    async def get_message(self, peek=False, timeout=0.5) -> discord.Message:
         start = time.time()
         while dpytest.sent_queue.empty() and time.time() - start < timeout:
             await asyncio.sleep(0.001)
@@ -64,5 +64,5 @@ class Helper:
 
 
 @pytest_asyncio.fixture(scope="session")
-async def helper():
-    return Helper(asyncio.get_running_loop())
+async def messenger():
+    return Messenger(asyncio.get_running_loop())
