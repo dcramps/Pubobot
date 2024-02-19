@@ -16,6 +16,9 @@ pyreadline3 = {version = "^3.4.1", platform = "win32"}
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.2.2"
+pytest = "^8.0.1"
+pytest-asyncio = "^0.23.5"
+dpytest = "0.5.3"
 
 [build-system]
 requires = ["poetry-core"]

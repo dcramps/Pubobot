@@ -62,7 +62,7 @@ class ConsoleCompleter(object):  # Custom completer
             return None
 
 
-def init(log_dir="logs"):
+def init(log_dir="logs", enable_input=True):
     global thread, log, userinput_queue, alive
 
     alive = True
@@ -77,10 +77,11 @@ def init(log_dir="logs"):
 
     userinput_queue = Queue()
 
-    # init user console
-    thread = Thread(target=userinput, name="Userinput")
-    thread.daemon = True
-    thread.start()
+    if enable_input:
+        # init user console
+        thread = Thread(target=userinput, name="Userinput")
+        thread.daemon = True
+        thread.start()
 
 
 def userinput():

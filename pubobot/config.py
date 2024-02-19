@@ -22,12 +22,15 @@ def init(config_file="config.cfg"):
     data = {}
 
     # load config
-    try:
-        with open(config_file, "r") as f:
-            exec(f.read(), data)
-    except Exception as e:
-        console.display("ERROR| ERROR PARSING config.cfg FILE!!! {0}".format(str(e)))
-        console.terminate()
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, "r") as f:
+                exec(f.read(), data)
+        except Exception as e:
+            console.display(
+                "ERROR| ERROR PARSING config.cfg FILE!!! {0}".format(str(e))
+            )
+            console.terminate()
 
     for k, v in data.items():
         if hasattr(cfg, k):
