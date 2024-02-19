@@ -150,123 +150,125 @@ def get_member_by_id(channel, highlight):
         return None
 
 
-### discord events ###
-intents = discord.Intents.default()
-intents.presences = True
-intents.members = True
-intents.typing = False
-c = discord.Client(intents=intents)
+def create_client():
+    ### discord events ###
+    intents = discord.Intents.default()
+    intents.presences = True
+    intents.members = True
+    intents.typing = False
+    c = discord.Client(intents=intents)
 
+    @c.event
+    async def on_ready():
+        global ready
+        if not ready:
+            process_connection()
+            ready = True
+        else:
+            console.display("DEBUG| Unexpected on_ready event!")
+        await c.change_presence(activity=discord.Game(name="pm !help"))
 
-@c.event
-async def on_ready():
-    global ready
-    if not ready:
-        process_connection()
-        ready = True
-    else:
-        console.display("DEBUG| Unexpected on_ready event!")
-    await c.change_presence(activity=discord.Game(name="pm !help"))
-
-
-@c.event
-async def on_message(message):
-    # if message.author.bot:
-    # return
-    if (
-        isinstance(message.channel, discord.abc.PrivateChannel)
-        and message.author.id != c.user.id
-    ):
-        console.display(
-            "PRIVATE| {0}>{1}>{2}: {3}".format(
-                message.guild,
-                message.channel,
-                message.author.display_name,
-                message.content,
-            )
-        )
-        private_reply(message.author, config.cfg.HELPINFO)
-    elif message.content == "!enable_pickups":
-        if message.channel.permissions_for(message.author).manage_channels:
-            if message.channel.id not in [x.id for x in bot.channels]:
-                newcfg = stats3.new_channel(
-                    message.guild.id,
-                    message.guild.name,
-                    message.channel.id,
-                    message.channel.name,
-                    message.author.id,
+    @c.event
+    async def on_message(message):
+        # if message.author.bot:
+        # return
+        if (
+            isinstance(message.channel, discord.abc.PrivateChannel)
+            and message.author.id != c.user.id
+        ):
+            console.display(
+                "PRIVATE| {0}>{1}>{2}: {3}".format(
+                    message.guild,
+                    message.channel,
+                    message.author.display_name,
+                    message.content,
                 )
-                bot.channels.append(bot.Channel(message.channel, newcfg))
-                reply(message.channel, message.author, config.cfg.FIRST_INIT_MESSAGE)
+            )
+            private_reply(message.author, config.cfg.HELPINFO)
+        elif message.content == "!enable_pickups":
+            if message.channel.permissions_for(message.author).manage_channels:
+                if message.channel.id not in [x.id for x in bot.channels]:
+                    newcfg = stats3.new_channel(
+                        message.guild.id,
+                        message.guild.name,
+                        message.channel.id,
+                        message.channel.name,
+                        message.author.id,
+                    )
+                    bot.channels.append(bot.Channel(message.channel, newcfg))
+                    reply(
+                        message.channel, message.author, config.cfg.FIRST_INIT_MESSAGE
+                    )
+                else:
+                    reply(
+                        message.channel,
+                        message.author,
+                        "this channel allready have pickups configured!",
+                    )
             else:
                 reply(
                     message.channel,
                     message.author,
-                    "this channel allready have pickups configured!",
+                    "You must have permission to manage channels to enable pickups.",
                 )
-        else:
-            reply(
-                message.channel,
-                message.author,
-                "You must have permission to manage channels to enable pickups.",
-            )
-    elif message.content == "!disable_pickups":
-        if message.channel.permissions_for(message.author).manage_channels:
-            for chan in bot.channels:
-                if chan.id == message.channel.id:
-                    bot.delete_channel(chan)
-                    reply(
-                        message.channel,
-                        message.author,
-                        "pickups on this channel have been disabled.",
-                    )
-                    return
-            reply(
-                message.channel,
-                message.author,
-                "pickups on this channel has not been set up yet!",
-            )
-        else:
-            reply(
-                message.channel,
-                message.author,
-                "You must have permission to manage channels to disable pickups.",
-            )
-    elif message.content != "":
-        for channel in bot.channels:
-            if message.channel.id == channel.id:
-                try:
-                    await channel.processmsg(message)
-                except:
-                    console.display(
-                        "ERROR| Error processing message: {0}".format(
-                            traceback.format_exc()
+        elif message.content == "!disable_pickups":
+            if message.channel.permissions_for(message.author).manage_channels:
+                for chan in bot.channels:
+                    if chan.id == message.channel.id:
+                        bot.delete_channel(chan)
+                        reply(
+                            message.channel,
+                            message.author,
+                            "pickups on this channel have been disabled.",
                         )
-                    )
+                        return
+                reply(
+                    message.channel,
+                    message.author,
+                    "pickups on this channel has not been set up yet!",
+                )
+            else:
+                reply(
+                    message.channel,
+                    message.author,
+                    "You must have permission to manage channels to disable pickups.",
+                )
+        elif message.content != "":
+            for channel in bot.channels:
+                if message.channel.id == channel.id:
+                    try:
+                        await channel.processmsg(message)
+                    except:
+                        console.display(
+                            "ERROR| Error processing message: {0}".format(
+                                traceback.format_exc()
+                            )
+                        )
+
+    @c.event
+    async def on_member_update(before, after):
+        # console.display("DEBUG| {0} changed status from {1}  to -{2}-".format(after.name, before.status, after.status))
+        if str(after.status) in ["idle", "offline"]:
+            bot.update_member(after)
+
+    @c.event
+    async def on_member_remove(member):
+        bot.member_left(member)
+
+    @c.event
+    async def on_reaction_add(reaction, user):
+        if reaction.message.id in bot.waiting_reactions.keys():
+            bot.waiting_reactions[reaction.message.id]("add", reaction, user)
+
+    @c.event
+    async def on_reaction_remove(reaction, user):
+        if reaction.message.id in bot.waiting_reactions.keys():
+            bot.waiting_reactions[reaction.message.id]("remove", reaction, user)
+
+    return c
 
 
-@c.event
-async def on_member_update(before, after):
-    # console.display("DEBUG| {0} changed status from {1}  to -{2}-".format(after.name, before.status, after.status))
-    if str(after.status) in ["idle", "offline"]:
-        bot.update_member(after)
-
-
-@c.event
-async def on_member_remove(member):
-    bot.member_left(member)
-
-
-@c.event
-async def on_reaction_add(reaction, user):
-    if reaction.message.id in bot.waiting_reactions.keys():
-        bot.waiting_reactions[reaction.message.id]("add", reaction, user)
-
-
-@c.event
-async def on_reaction_remove(reaction, user):
-    if reaction.message.id in bot.waiting_reactions.keys():
-        bot.waiting_reactions[reaction.message.id]("remove", reaction, user)
+c = create_client()
 
 
 ### connect to discord ###
