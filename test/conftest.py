@@ -7,13 +7,16 @@ import discord.ext.test as dpytest
 
 
 @pytest_asyncio.fixture(scope="session")
-async def bot():
+async def bot(tmp_path_factory):
     from pubobot import console, scheduler, bot, stats3, config, client
+
+    # Always use a clean database
+    db = tmp_path_factory.mktemp("pubobot_tests") / "db.sqlite3"
 
     console.init(enable_input=False)
     scheduler.init()
     bot.init()
-    stats3.init()
+    stats3.init(db)
     config.init()
     client.init()
 
