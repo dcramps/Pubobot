@@ -2,6 +2,7 @@ import pytest_asyncio
 import time
 import asyncio
 
+import discord
 import discord.ext.test as dpytest
 
 
@@ -16,7 +17,7 @@ async def bot():
     config.init()
     client.init()
 
-    dpytest.configure(client.c)
+    dpytest.configure(client.c, num_members=20)
 
     async def run_background_tasks():
         while True:
@@ -39,3 +40,26 @@ async def bot():
 
     console.terminate()
     await background_task
+
+
+class Helper:
+    def __init__(self, loop=None):
+        self.loop = loop or asyncio.get_running_loop()
+
+    async def message(self, peek=False, timeout=0.5) -> discord.Message:
+        start = time.time()
+        while dpytest.sent_queue.empty() and time.time() - start < timeout:
+            await asyncio.sleep(0.001)
+
+        if dpytest.sent_queue.empty():
+            raise TimeoutError()
+
+        if peek:
+            return dpytest.sent_queue.peek()
+
+        return dpytest.sent_queue.get_nowait()
+
+
+@pytest_asyncio.fixture(scope="session")
+async def helper():
+    return Helper(asyncio.get_running_loop())
