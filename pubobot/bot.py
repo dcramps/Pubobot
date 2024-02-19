@@ -5,10 +5,10 @@ import time
 import datetime
 import re
 import random
-from discord import errors
+import discord
 from itertools import combinations
-from collections import OrderedDict
-from . import client, config, console, stats3, scheduler, utils
+from . import client, config, console, memberformatter, stats3, scheduler, utils
+from typing import List, OrderedDict
 
 max_expire_time = 6 * 60 * 60  # 6 hours
 max_bantime = 30 * 24 * 60 * 60 * 12 * 3  # 30 days * 12 * 3
@@ -143,7 +143,7 @@ class UnpickedPool:
 
 
 class Match:
-    def __init__(self, pickup, players):
+    def __init__(self, pickup, players: List[discord.Member]):
         global matches_step
         # set match id
         stats3.last_match += 1
@@ -212,8 +212,8 @@ class Match:
                     self.captains = random.sample(self.players, 2)
 
             elif pick_captains == 1 and self.captains_role:
-                self.captains = []
-                candidates = list(
+                self.captains: List[discord.Member] = []
+                candidates: List[discord.Member] = list(
                     filter(
                         lambda x: self.captains_role in [role.id for role in x.roles],
                         self.players,
@@ -262,8 +262,8 @@ class Match:
             elif self.pick_teams == "manual":
                 self.pick_step = 0
                 unpicked = list(players)
-                self.alpha_team = []
-                self.beta_team = []
+                self.alpha_team: List[discord.Member] = []
+                self.beta_team: List[discord.Member] = []
                 if self.captains:
                     self.alpha_team.append(self.captains[0])
                     self.beta_team.append(self.captains[1])
@@ -335,10 +335,10 @@ class Match:
         alive_time = frametime - self.start_time
         if self.state == "waiting_ready":
             if alive_time > self.require_ready:
-                not_ready = list(
+                not_ready: List[discord.Member] = list(
                     filter(lambda x: x.id not in self.players_ready, self.players)
                 )
-                self.players = list(
+                self.players: List[discord.Member] = list(
                     filter(lambda x: x.id in self.players_ready, self.players)
                 )
                 not_ready = ["<@{0}>".format(i.id) for i in not_ready]
@@ -705,12 +705,12 @@ class Match:
     def ready_refresh(self):
         not_ready = list(filter(lambda i: i.id not in self.players_ready, self.players))
         if len(not_ready):
-            content = (
-                "__*({0})* **{1}** pickup is now on waiting ready state!__\r\n".format(
-                    self.id, self.pickup.name
-                )
+            content = "*({0})* The **{1}** pickup has filled\r\n".format(
+                self.id, self.pickup.name
             )
-            content += "Waiting on: {0}.\r\n".format(self._players_to_str(not_ready))
+            content += "Waiting on: {0}.\r\n".format(
+                memberformatter.format_list(None, not_ready, False)
+            )
             content += "Please react with :ballot_box_with_check: to **check-in** or :no_entry: to **abort**!"
             client.edit_message(self.ready_message, content)
         else:
@@ -757,7 +757,7 @@ class ReadyMark:
 
 class Pickup:
     def __init__(self, channel, cfg):
-        self.players = []  # [discord member objects]
+        self.players: List[discord.Member] = []
         self.users_last_ready = {}
         self.name = cfg["pickup_name"]
         self.lastmap = None
