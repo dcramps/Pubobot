@@ -1,0 +1,73 @@
+name: Test
+on: [push]
+jobs:
+  Lint:
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+          cache: 'poetry'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Lint with Ruff
+        run: |
+          poetry run ruff --output-format github .
+        continue-on-error: true
+
+  Check-Formatting:
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+          cache: 'poetry'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check formatting
+        run: |
+          poetry run ruff format --check pubobot/ test/
+        continue-on-error: true
+
+  Test:
+    runs-on: ubuntu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+          cache: 'poetry'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check formatting
+        run: poetry run pytest --junitxml=junit/test-results-py3.8.xml
+
+      - name: Upload pytest results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-py3.8
+          path: junit/test-results-py3.8.xml
+        if: ${{ always() }}
