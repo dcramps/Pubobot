@@ -5,11 +5,11 @@ import asyncio
 import discord
 import discord.ext.test as dpytest
 
-from pubobot import console, scheduler, bot as bot_, stats3, config, client
+from pubobot import console, scheduler, bot, stats3, config, client
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def bot(tmp_path_factory):
+async def pbot(tmp_path_factory):
     # Recreate client with the pytest-asyncio event loop
     client.c = client.create_client()
 
@@ -18,7 +18,7 @@ async def bot(tmp_path_factory):
 
     console.init(enable_input=False)
     scheduler.init()
-    bot_.init()
+    bot.init()
     stats3.init(db)
     config.init()
     client.init()
@@ -32,7 +32,7 @@ async def bot(tmp_path_factory):
                 break
 
             frametime = time.time()
-            bot_.run(frametime)
+            bot.run(frametime)
             scheduler.run(frametime)
             console.run()
 

@@ -5,7 +5,7 @@ import discord.ext.test as dpytest
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_enable_pickups(bot, messenger):
+async def test_enable_pickups(pbot, messenger):
     await dpytest.message("!enable_pickups", member=0)
 
     message = await messenger.get_message()
@@ -24,7 +24,7 @@ async def test_enable_pickups(bot, messenger):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_add_pickup(bot, messenger):
+async def test_add_pickup(pbot, messenger):
     await dpytest.message("!add_pickups elim:8", member=0)
     message = await messenger.get_message()
     assert "**elim** (0/8)" in message.content
@@ -42,7 +42,7 @@ async def test_add_pickup(bot, messenger):
 
 
 @pytest.mark.asyncio(scope="session")
-async def test_pickup_game(bot, messenger):
+async def test_pickup_game(pbot, messenger):
     size = 8
     cfg = dpytest.get_config()
 
