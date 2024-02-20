@@ -44,28 +44,32 @@ jobs:
         run: poetry run ruff format --check pubobot/ test/
 
   Test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.8', '3.12']
     steps:
       - uses: actions/checkout@v4
 
       - name: Install poetry
         run: pipx install poetry
 
-      - name: Set up Python 3.8
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python-version }}
           cache: 'poetry'
 
       - name: Install dependencies
         run: poetry install
 
-      - name: Check formatting
-        run: poetry run pytest --junitxml=junit/test-results-py3.8.xml
+      - name: Run pytest
+        run: poetry run pytest --junitxml=junit/test-results-py${{ matrix.python-version }}-${{ matrix.os }}.xml
 
       - name: Upload pytest results
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results-py3.8
-          path: junit/test-results-py3.8.xml
+          name: pytest-results-py${{ matrix.python-version }}-${{ marix.os }}
+          path: junit/test-results-py${{ matrix.python-version }}-${{ matrix.os }}.xml
         if: ${{ always() }}
