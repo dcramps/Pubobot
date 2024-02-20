@@ -1,4 +1,4 @@
-name: Test
+name: Checks
 on: [push]
 jobs:
   Lint:
@@ -22,8 +22,8 @@ jobs:
         run: poetry run ruff --output-format github .
         continue-on-error: true
 
-  Check-Formatting:
-    name: Check Formatting
+  Formatting:
+    name: Formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
