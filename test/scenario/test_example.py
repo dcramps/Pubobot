@@ -3,6 +3,10 @@ import pytest
 import discord
 import discord.ext.test as dpytest
 
+from collections import deque
+
+from matcher import PickStageMatcher
+
 
 @pytest.mark.asyncio(scope="session")
 async def test_enable_pickups(pbot, messenger):
@@ -68,7 +72,70 @@ async def test_pickup_game(pbot, messenger):
     message = await messenger.get_message()
     assert "[**no pickups**]" in message.content
 
-    # TODO: Match content against a regular expression to extract random
-    # captains and simulate team picking
+    # Simulate picking
+    matcher = PickStageMatcher()
     message = await messenger.get_message()
-    assert "please start picking teams" in message.content
+    match = matcher.match_start(message.content)
+
+    assert len(match.unpicked) == size - 2
+
+    alpha_capt = next(m for m in cfg.members if m.id == match.alpha_capt_id)
+    beta_capt = next(m for m in cfg.members if m.id == match.beta_capt_id)
+
+    unpicked = deque()
+    for num, name in match.unpicked:
+        for m in cfg.members:
+            if m.display_name == name:
+                unpicked.append((num, m))
+
+    alpha_team = [alpha_capt]
+    beta_team = [beta_capt]
+
+    num, picked = unpicked.popleft()
+    await dpytest.message(f"!p {num}", member=alpha_capt)
+    message = await messenger.get_message()
+    match = matcher.match_turn(message.content)
+    alpha_team.append(picked)
+
+    num, picked = unpicked.popleft()
+    await dpytest.message(f"!p {num}", member=beta_capt)
+    message = await messenger.get_message()
+    match = matcher.match_turn(message.content)
+    beta_team.append(picked)
+
+    num, picked = unpicked.popleft()
+    await dpytest.message(f"!p {num}", member=beta_capt)
+    message = await messenger.get_message()
+    match = matcher.match_turn(message.content)
+    beta_team.append(picked)
+
+    num, picked = unpicked.popleft()
+    await dpytest.message(f"!p {num}", member=alpha_capt)
+    message = await messenger.get_message()
+    match = matcher.match_turn(message.content)
+    alpha_team.append(picked)
+
+    num, picked = unpicked.popleft()
+    await dpytest.message(f"!p {num}", member=alpha_capt)
+    message = await messenger.get_message()
+    match = matcher.match_ready(message.content)
+    alpha_team.append(picked)
+
+    # Add last member to beta team
+    _, picked = unpicked.popleft()
+    beta_team.append(picked)
+
+    actual_alpha_team = []
+    for id in match.alpha_team:
+        for m in cfg.members:
+            if m.id == id:
+                actual_alpha_team.append(m)
+
+    actual_beta_team = []
+    for id in match.beta_team:
+        for m in cfg.members:
+            if m.id == id:
+                actual_beta_team.append(m)
+
+    assert alpha_team == actual_alpha_team
+    assert beta_team == actual_beta_team
