@@ -65,11 +65,11 @@ jobs:
         run: poetry install
 
       - name: Run pytest
-        run: poetry run pytest --junitxml=junit/test-results-py${{ matrix.python-version }}-${{ matrix.os }}.xml
+        run: poetry run pytest --junitxml=junit/test-results-${{ matrix.os }}-py${{ matrix.python-version }}.xml
 
       - name: Upload pytest results
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results-py${{ matrix.python-version }}-${{ matrix.os }}
-          path: junit/test-results-py${{ matrix.python-version }}-${{ matrix.os }}.xml
+          name: pytest-results-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: junit/test-results-${{ matrix.os }}-py${{ matrix.python-version }}.xml
         if: ${{ always() }}
