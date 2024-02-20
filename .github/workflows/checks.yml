@@ -23,7 +23,6 @@ jobs:
         continue-on-error: true
 
   Formatting:
-    name: Formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
