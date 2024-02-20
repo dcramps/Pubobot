@@ -19,8 +19,7 @@ jobs:
         run: poetry install
 
       - name: Lint with Ruff
-        run: |
-          poetry run ruff --output-format github .
+        run: poetry run ruff --output-format github .
         continue-on-error: true
 
   Check-Formatting:
@@ -41,9 +40,7 @@ jobs:
         run: poetry install
 
       - name: Check formatting
-        run: |
-          poetry run ruff format --check pubobot/ test/
-        continue-on-error: true
+        run: poetry run ruff format --check pubobot/ test/
 
   Test:
     runs-on: ubuntu-latest
