@@ -74,6 +74,9 @@ class UnpickedPool:
     def __len__(self):
         return len(self.position_to_players)
 
+    def empty(self):
+        return len(self) == 0
+
     @property
     def all(self):
         """Return all position to player mappings."""
@@ -87,6 +90,12 @@ class UnpickedPool:
 
     def get(self, position):
         return self.position_to_players.get(position)
+
+    def get_by_player_id(self, player_id):
+        for position in self.position_to_players:
+            if self.position_to_players[position].id == player_id:
+                return position, self.position_to_players[position]
+        return (None, None)
 
     def pick_by_position(self, position):
         """Pick a player by their position from the arbitrary position assignments they were given."""
@@ -111,6 +120,11 @@ class UnpickedPool:
     def remove(self, position):
         """Remove a player by their position in the unpicked pool."""
         del self.position_to_players[position]
+
+    def remove_player(self, player):
+        pos, player = self.get_by_player_id(player.id)
+        if pos is not None:
+            self.remove(pos)
 
     def add(self, player, position):
         """Adds a player to the unpicked pool with a pre-assigned position"""
@@ -958,10 +972,10 @@ class Channel:
                 self.cointoss(member, lower[1:2])
 
             elif lower[0] == "p":
-                self.pick_player(member, lower[1:2])
+                self.pick_player(member, lower[1:])
 
             elif lower[0] == "pick":
-                self.pick_player(member, lower[1:2])
+                self.pick_player(member, lower[1:])
 
             elif lower[0] == "put":
                 await self.put_player(member, lower[1:3], access_level)
@@ -1456,77 +1470,95 @@ class Channel:
             )
             return
 
-        if member in match.alpha_team[0:1]:
-            team = match.alpha_team
-            enemy_team = match.beta_team
-            if match.pick_order:
-                if match.pick_order[match.pick_step] == "b":
-                    client.reply(self.channel, member, "Not your turn to pick.")
-                    return
-        elif member in match.beta_team[0:1]:
-            team = match.beta_team
-            enemy_team = match.alpha_team
-            if match.pick_order:
-                if match.pick_order[match.pick_step] == "a":
-                    client.reply(self.channel, member, "Not your turn to pick.")
-                    return
+        is_alpha_capt = member == match.alpha_team[0]
+        is_beta_capt = member == match.beta_team[0]
+
+        team, enemy, turn = None, None, ""
+
+        def my_turn(match):
+            return match.pick_order and match.pick_order[match.pick_step] == turn
+
+        if is_alpha_capt:
+            team, enemy, turn = match.alpha_team, match.beta_team, "a"
+        elif is_beta_capt:
+            team, enemy, turn = match.beta_team, match.alpha_team, "b"
         else:
             client.reply(self.channel, member, "You are not a captain.")
             return
 
-        if len(args):
-            target_id = args[0].lstrip("<@!").rstrip(">")
-            if not target_id.isdigit():
-                client.reply(self.channel, member, "You must specify a highlight!")
-                return
-            target_id = int(target_id)
-            if target_id <= 10:
-                player = match.unpicked_pool.pick_by_position(target_id)
-            else:
-                player = match.unpicked_pool.pick_by_player_id(target_id)
+        if not my_turn(match):
+            client.reply(self.channel, member, "Not your turn to pick.")
+            return
 
-            if player:
-                team.append(player)
-                if len(match.unpicked_pool) == 0 or match.maxplayers == len(
-                    match.alpha_team
-                ) + len(match.beta_team):
-                    match.next_state()
-                elif len(match.unpicked_pool) == 1 and match.pick_order:
-                    match.pick_step += 1
-                    if match.pick_order[match.pick_step] == "a":
-                        match.alpha_team.append(match.unpicked_pool.first())
-                    else:
-                        match.beta_team.append(match.unpicked_pool.first())
-                    match.next_state()
-                else:
-                    msg = match._teams_picking_to_str()
-                    if match.pick_order:
-                        match.pick_step += 1
-                        if match.pick_order[match.pick_step] == "a":
-                            if len(match.alpha_team):
-                                who = "<@{0}>".format(match.alpha_team[0].id)
-                            else:
-                                who = match.team_names[0]
-                        else:
-                            if len(match.beta_team):
-                                who = "<@{0}>".format(match.beta_team[0].id)
-                            else:
-                                who = match.team_names[1]
-                        msg += "\n{0}'s turn to pick!".format(who)
-                    client.notice(self.channel, msg)
+        # Parse player input
+        picks = []
+        for arg in args:
+            m = re.match(r"((?P<pos>\d+)|<@!?(?P<id>\d+)>)", arg)
+            if not m:
+                continue
+
+            if m["pos"] is not None:
+                pos = int(m["pos"])
+                player = match.unpicked_pool.get(pos)
+                picks.append(player)
+            elif m["id"] is not None:
+                target_id = int(m["id"])
+                _, player = match.unpicked_pool.get_by_player_id(target_id)
+                picks.append(player)
             else:
-                client.reply(
-                    self.channel,
-                    member,
-                    "Specified player are not in unpicked players list.",
-                )
-        else:
+                continue
+
+        if not picks:
             client.reply(self.channel, member, "You must specify a player to pick!")
+            return
 
+        # Add picks one by one
+        added = []
+        for player in picks:
+            # Stop parsing if the user has exhasuted his turn
+            if not my_turn(match):
+                break
+
+            team.append(player)
+            added.append(player)
+            match.unpicked_pool.remove_player(player)
+
+            match.pick_step += 1
+
+        if not added:
+            client.reply(
+                self.channel,
+                member,
+                "Specified player are not in unpicked players list.",
+            )
+
+        # If a player remains, add to the team with the current turn
         if len(match.unpicked_pool) == 1:
-            last_player = match.unpicked_pool.first()
-            enemy_team.append(last_player)
+            if my_turn(match):
+                team.append(match.unpicked_pool.first())
+            else:
+                enemy.append(match.unpicked_pool.first())
+
+        if match.unpicked_pool.empty() or match.maxplayers == len(
+            match.alpha_team + match.beta_team
+        ):
             match.next_state()
+        else:
+            msg = match._teams_picking_to_str()
+
+            if match.pick_order[match.pick_step] == "a":
+                if len(match.alpha_team):
+                    who = "<@{0}>".format(match.alpha_team[0].id)
+                else:
+                    who = match.team_names[0]
+            else:
+                if len(match.beta_team):
+                    who = "<@{0}>".format(match.beta_team[0].id)
+                else:
+                    who = match.team_names[1]
+
+            msg += "\n{0}'s turn to pick!".format(who)
+            client.notice(self.channel, msg)
 
     async def put_player(self, member, args, access_level):
         if not access_level:
