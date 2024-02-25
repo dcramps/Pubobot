@@ -1,8 +1,44 @@
 import re
 
+from io import StringIO
+
 from typing import TypeVar, Dict, Iterable, Tuple, Callable
 
 T = TypeVar("T")
+
+
+def compile_simple_expression(expr: str) -> re.Pattern:
+    """Compile a simplified expression into a regular expression.
+
+    If you use f-strings, you must use `{{` and `}}` around capture groups,
+    otherwise Python will interpolate.
+
+    >>> pattern = compile_simple_expression("**{name}** [{current}/{total}]")
+    >>> match = pattern.match("**elim** [1/8]")
+    >>> match["name"]
+    "elim"
+    >>> match["current"]
+    "1"
+    >>> match["total"]
+    "8"
+    """
+    pattern = StringIO()
+    capture_pattern = re.compile(r"{\s*(?P<name>[a-zA-Z0-9_][a-zA-Z0-9_-]*)\s*}")
+
+    pos = 0
+    for match in capture_pattern.finditer(expr):
+        name = match["name"]
+        capture_group = f"(?P<{name}>.*?)"
+
+        pattern.write(re.escape(expr[pos : match.start()]))
+        pattern.write(capture_group)
+
+        pos = match.end()
+
+    if pos < len(expr):
+        pattern.write(re.escape(expr[pos:]))
+
+    return re.compile(pattern.getvalue())
 
 
 class Match:
@@ -57,30 +93,32 @@ class PickStageReadyMatch(Match):
 
 
 class PickStageMatcher:
-    _start_header = re.compile(
-        r"__\*\((?P<match_id>\d+)\)\* \*\*elim\*\* pickup has been started!__\s+"
-        r"<@(?P<alpha_capt_id>\d+)> and <@(?P<beta_capt_id>\d+)> please start picking teams.\s+"
+    _start_header = compile_simple_expression(
+        "__*({match_id})* **{game}** pickup has been started!__\r\n"
+        "<@{alpha_capt_id}> and <@{beta_capt_id}> please start picking teams.\r\n\r\n"
     )
 
-    _body = re.compile(
-        r"\*\*Match (?P<match_id>\d+)\*\*\s+"
-        r":(?P<alpha_emote>[^:]+): \u2772(?P<alpha_team>[^\u2773]+)\u2773\s+"
-        r":(?P<beta_emote>[^:]+): \u2772(?P<beta_team>[^\u2773]+)\u2773\s+"
-        r"__Unpicked__:\s+\[(?P<unpicked>[^]]+)\]\s+"
+    _body = compile_simple_expression(
+        "**Match {match_id}**\n"
+        ":{alpha_emote}: \u2772{alpha_team}\u2773\n"
+        ":{beta_emote}: \u2772{beta_team}\u2773\n\n"
+        "__Unpicked__:\n"
+        "[{unpicked}]"
     )
 
-    _start_footer = re.compile(r"<@(?P<turn_capt_id>\d+)> picks first!")
-    _turn_footer = re.compile(r"<@(?P<turn_capt_id>\d+)>'s turn to pick!")
-    _picked = re.compile(r"`(?P<name>[^`]+)`")
-    _unpicked = re.compile(r"(?P<num>\d+)\. `(?P<name>[^`]+)`")
+    _start_footer = compile_simple_expression("\r\n<@{turn_capt_id}> picks first!")
+    _turn_footer = compile_simple_expression("\n<@{turn_capt_id}>'s turn to pick!")
 
-    _ready = re.compile(
-        r"\*\*TEAMS READY - Match (?P<match_id>\d+)\*\*\s+"
-        r":(?P<alpha_emote>[^:]+): \u2772(?P<alpha_team>[^\u2773]+)\u2773\s+"
-        r":(?P<beta_emote>[^:]+): \u2772(?P<beta_team>[^\u2773]+)\u2773\s+"
+    _picked = compile_simple_expression("`{name}`")
+    _unpicked = compile_simple_expression("{num}. `{name}`")
+
+    _ready = compile_simple_expression(
+        "**TEAMS READY - Match {match_id}**\r\n\r\n"
+        ":{alpha_emote}: \u2772{alpha_team}\u2773 \n"
+        ":{beta_emote}: \u2772{beta_team}\u2773 \r\n\r\n"
     )
 
-    _ready_member = re.compile(r"<@(?P<id>\d+)>")
+    _ready_member = compile_simple_expression("<@{id}>")
 
     def match_start(self, text: str) -> PickStageStartMatch:
         patterns = (self._start_header, self._body, self._start_footer)
@@ -126,47 +164,35 @@ class PickStageMatcher:
         return factory(fields, alpha_team, beta_team, unpicked)
 
     def _match_picked(self, text: str) -> Iterable[str]:
-        pos = 0
-
         picked = []
-        while pos < len(text):
-            match = self._picked.search(text, pos)
+        for match in self._picked.finditer(text):
             if not match:
                 break
 
             name = match.group("name")
             picked.append(name)
-            pos = match.end()
 
         return picked
 
     def _match_unpicked(self, text: str) -> Iterable[Tuple[int, str]]:
-        pos = 0
-
         unpicked = []
-        while pos < len(text):
-            match = self._unpicked.search(text, pos)
-            if not match:
-                break
+        for s in text.split(","):
+            match = self._unpicked.match(s.strip())
+            assert match
 
             num, name = int(match.group("num")), match.group("name")
             unpicked.append((num, name))
-            pos = match.end()
 
         return unpicked
 
     def _match_ready_team(self, text: str) -> Iterable[int]:
-        pos = 0
-
         team = []
-        while pos < len(text):
-            match = self._ready_member.search(text, pos)
+        for match in self._ready_member.finditer(text):
             if not match:
                 break
 
             id = int(match.group("id"))
             team.append(id)
-            pos = match.end()
 
         return team
 
