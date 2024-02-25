@@ -199,7 +199,7 @@ async def test_require_ready_auto_backfill(pbot, pickup):
     # Make extra player leave
     async with pbot.interact("!lva", extra_player, collect=2) as msgs:
         assert f"**{extra_player.nick}** left during pick phase!" in msgs[0].content
-        assert simple_match("[**{game}** (7/{total})]", msgs[1].content)
+        assert "**elim** (7/8)" in msgs[1].content
 
     # Join back in
     await pbot.send_message("!j", extra_player)
@@ -215,14 +215,15 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     # Should get a new ready message for updated players
     async with pbot.message() as msg:
-        assert (match := simple_match("!spawn_message {match_id}", msg.content))
+        assert simple_match("!spawn_message {match_id}", msg.content)
         ready_msg = msg
 
     # Give the bot a bit of time to edit it's own message
     await asyncio.sleep(0.005)
 
     # Match ready string
-    assert (match := ready_message_pattern.match(ready_msg.content))
+    match = ready_message_pattern.match(ready_msg.content)
+    assert match
 
     # Since the previous players were ready before ready expiration,
     # only the player that left is required to ready
@@ -233,7 +234,7 @@ async def test_require_ready_auto_backfill(pbot, pickup):
     # Make extra player leave to reset again
     async with pbot.interact("!lva", extra_player, collect=2) as msgs:
         assert f"**{extra_player.nick}** is not ready!" in msgs[0].content
-        assert simple_match("[**{game}** (7/{total})]", msgs[1].content)
+        assert "**elim** (7/8)" in msgs[1].content
 
     # Advance 10 minutes so the ready marks on all players expire
     pbot.time_travel(600)
@@ -252,14 +253,15 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     # Should get a new ready message for updated players
     async with pbot.message() as msg:
-        assert (match := simple_match("!spawn_message {match_id}", msg.content))
+        assert simple_match("!spawn_message {match_id}", msg.content)
         ready_msg = msg
 
     # Give the bot a bit of time to edit it's own message
     await asyncio.sleep(0.005)
 
     # Match ready string
-    assert (match := ready_message_pattern.match(ready_msg.content))
+    match = ready_message_pattern.match(ready_msg.content)
+    assert match
 
     # All players should be required to check in since 10 minutes have "passed"
     assert [p.id for p in players] == [
