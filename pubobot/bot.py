@@ -731,32 +731,43 @@ class Match:
         self.next_state()
 
 
+class ReadyMark:
+    def __init__(self, user):
+        self.user = user
+        self.time = 0.0
+
+    @property
+    def elapsed(self):
+        return time.time() - self.time
+
+
 class Pickup:
     def __init__(self, channel, cfg):
         self.players = []  # [discord member objects]
-        self.users_last_ready = []
+        self.users_last_ready = {}
         self.name = cfg["pickup_name"]
         self.lastmap = None
         self.channel = channel
         self.cfg = cfg
 
     def mark_user_ready(self, *users):
+        ready_time = time.time()
         for u in users:
-            self.users_last_ready.append((u, time.time()))
+            mark = self.users_last_ready.get(u.id, ReadyMark(u))
+            mark.time = ready_time
+            self.users_last_ready[u.id] = mark
 
     def unmark_user_ready(self, *users):
-        remove_ids = set(u.id for u in users)
-        self.users_last_ready[:] = [
-            (u, t) for u, t in self.users_last_ready if u.id not in remove_ids
-        ]
+        for u in users:
+            self.users_last_ready.pop(u.id, None)
 
     def get_ready_users(self, users, expiration):
         valid_ids = set(u.id for u in users)
 
         ready_users = []
-        for u, t in self.users_last_ready:
-            if u.id in valid_ids and time.time() - t <= expiration:
-                ready_users.append(u)
+        for _, mark in self.users_last_ready.items():
+            if mark.user.id in valid_ids and mark.elapsed <= expiration:
+                ready_users.append(mark.user)
 
         return ready_users
 
