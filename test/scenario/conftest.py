@@ -4,6 +4,7 @@ import time
 import asyncio
 
 from typing import List, Optional, Iterable, Union, Any, Dict
+from unittest.mock import patch, Mock
 
 import discord
 import discord.ext.test as dpytest
@@ -11,8 +12,17 @@ import discord.ext.test as dpytest
 from pubobot import console, scheduler, bot, stats3, config, client
 
 
+@pytest.fixture
+def time_mock():
+    """The bot has time.time() scattered everywhere, so patch it to simulate
+    time."""
+    with patch("time.time") as mock:
+        mock.return_value = 0
+        yield mock
+
+
 @pytest_asyncio.fixture
-async def pbot_client(tmp_path):
+async def pbot_client(tmp_path, time_mock):
     # Recreate client with the pytest-asyncio event loop
     client.c = client.create_client(asyncio.get_running_loop())
 
@@ -53,7 +63,7 @@ async def pbot_client(tmp_path):
 
 
 @pytest_asyncio.fixture
-async def pbot(request, pbot_client):
+async def pbot(request, pbot_client, time_mock):
     scenario = request.node.get_closest_marker("scenario")
     if scenario is None:
         guild = "DefaultGuild"
@@ -65,7 +75,7 @@ async def pbot(request, pbot_client):
         members = scenario.kwargs.get("members", 10)
 
     context = Context.create(client.c, guild, channel, members)
-    messenger = Messenger(context, pbot_client, loop=pbot_client.loop)
+    messenger = Messenger(context, pbot_client, time_mock, loop=pbot_client.loop)
     return messenger
 
 
@@ -121,11 +131,16 @@ class Messenger:
         self,
         context: Context,
         client: discord.Client,
+        time_mock: Mock,
         loop: Optional[asyncio.AbstractEventLoop] = None,
     ):
         self.context = context
         self.client = client
         self.loop = loop or asyncio.get_running_loop()
+
+        self._time = 0
+        self.time_mock = time_mock
+        self.time_mock.return_value = self._time
 
     @property
     def guild(self) -> discord.Guild:
@@ -188,6 +203,14 @@ class Messenger:
             return dpytest.sent_queue.peek()
 
         return dpytest.sent_queue.get_nowait()
+
+    @property
+    def time(self) -> float:
+        return self._time
+
+    def time_travel(self, advance: float):
+        self._time += advance
+        self.time_mock.return_value = self._time
 
 
 class Message:

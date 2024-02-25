@@ -8,7 +8,7 @@ from decimal import Decimal
 from . import console
 
 # INIT
-version = 13
+version = 14
 
 
 conn = None
@@ -919,6 +919,10 @@ def check_db():
                 """
             )
 
+        if db_version < 14:
+            c.execute("ALTER TABLE `channels` ADD COLUMN `ready_expire` INTEGER")
+            c.execute("ALTER TABLE `pickup_configs` ADD COLUMN `ready_expire` INTEGER")
+
         c.execute(
             "INSERT OR REPLACE INTO utility (variable, value) VALUES ('version', ?)",
             (str(version),),
@@ -993,6 +997,7 @@ def create_tables():
         `blacklist_role` INTEGER,
         `whitelist_role` INTEGER,
         `require_ready` INTEGER,
+        `ready_expire` INTEGER,
         `ranked` INTEGER,
         `ranked_multiplayer` INTEGER DEFAULT 32,
         `ranked_calibrate` INTEGER DEFAULT 1,
@@ -1031,6 +1036,7 @@ def create_tables():
         `whitelist_role` INTEGER,
         `captain_role` INTEGER,
         `require_ready` INTEGER,
+        `ready_expire` INTEGER,
         `ranked` INTEGER,
         `allow_offline` INTEGER DEFAULT 0,
         `autostart` INTEGER,

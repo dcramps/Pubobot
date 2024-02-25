@@ -139,6 +139,7 @@ class Match:
         self.maxplayers = pickup.cfg["maxplayers"]
         self.pick_teams = pickup.channel.get_value("pick_teams", pickup)
         self.require_ready = pickup.channel.get_value("require_ready", pickup)
+        self.ready_expire = pickup.channel.get_value("ready_expire", pickup)
         self.pick_order = pickup.cfg["pick_order"]
         self.ranked = bool(
             pickup.channel.get_value("ranked", pickup) and self.pick_teams != "no_teams"
@@ -220,7 +221,14 @@ class Match:
             self.captains = None
 
         if self.require_ready:
-            self.players_ready = [False for i in players]
+            self.players_ready = []
+
+            if self.ready_expire:
+                # Add users recently ready
+                for user in self.pickup.get_ready_users(
+                    self.players, self.ready_expire
+                ):
+                    self.players_ready.append(user.id)
 
         emojis = pickup.channel.get_value("team_emojis", pickup)
         if emojis:
@@ -583,6 +591,7 @@ class Match:
     def finish_match(self):
         new_ranks = stats3.register_pickup(self)
         self.pickup.channel.lastgame_cache = stats3.lastgame(self.pickup.channel.id)
+        self.pickup.unmark_user_ready(*self.players)
         active_matches.remove(self)
         if self.state == "waiting_report":
             client.notice(
@@ -640,6 +649,7 @@ class Match:
             and user.id in self.players_ready
         ):
             self.players_ready.remove(user.id)
+            self.pickup.unmark_user_ready(user)
             self.ready_refresh()
 
         elif (
@@ -648,6 +658,7 @@ class Match:
             and user in filter(lambda i: i.id not in self.players_ready, self.players)
         ):
             self.players_ready.append(user.id)
+            self.pickup.mark_user_ready(user)
             self.ready_refresh()
 
         elif (
@@ -657,6 +668,7 @@ class Match:
 
     def ready_notready(self, user):
         self.players.remove(user)
+        self.pickup.unmark_user_ready(user)
         client.notice(
             self.channel,
             "**{0}** is not ready!\r\nReverting **{1}** to gathering state...".format(
@@ -664,6 +676,17 @@ class Match:
             ),
         )
         self.ready_fallback()
+
+    def player_left(self, user):
+        self.players.remove(user)
+        self.pickup.unmark_user_ready(user)
+        client.notice(
+            self.channel,
+            "**{0}** left during pick phase! Reverting **{1}** to gathering state...".format(
+                user.nick or user.name, self.pickup.name
+            ),
+        )
+        self.pickup_fallback()
 
     def ready_refresh(self):
         not_ready = list(filter(lambda i: i.id not in self.players_ready, self.players))
@@ -711,10 +734,31 @@ class Match:
 class Pickup:
     def __init__(self, channel, cfg):
         self.players = []  # [discord member objects]
+        self.users_last_ready = []
         self.name = cfg["pickup_name"]
         self.lastmap = None
         self.channel = channel
         self.cfg = cfg
+
+    def mark_user_ready(self, *users):
+        for u in users:
+            self.users_last_ready.append((u, time.time()))
+
+    def unmark_user_ready(self, *users):
+        remove_ids = set(u.id for u in users)
+        self.users_last_ready[:] = [
+            (u, t) for u, t in self.users_last_ready if u.id not in remove_ids
+        ]
+
+    def get_ready_users(self, users, expiration):
+        valid_ids = set(u.id for u in users)
+
+        ready_users = []
+        for u, t in self.users_last_ready:
+            if u.id in valid_ids and time.time() - t <= expiration:
+                ready_users.append(u)
+
+        return ready_users
 
 
 class Channel:
@@ -1158,6 +1202,7 @@ class Channel:
                 ):
                     changes.append(pickup.name)
                     pickup.players.remove(member)
+                    pickup.unmark_user_ready(member)
                     if len(pickup.players) == 0:
                         active_pickups.remove(pickup)
                 elif allpickups:
@@ -1171,14 +1216,7 @@ class Channel:
                     if match.state == "waiting_ready":
                         match.ready_notready(member)
                     else:
-                        match.players.remove(member)
-                        client.notice(
-                            match.channel,
-                            "**{0}** left during pick phase! Reverting **{1}** to gathering state...".format(
-                                member.nick or member.name, match.pickup.name
-                            ),
-                        )
-                        match.pickup_fallback()
+                        match.player_left(member)
 
         # update topic and warn player
         if changes != []:
@@ -3518,6 +3556,25 @@ class Channel:
                     "Set '{0}' {1} as default value".format(seconds, variable),
                 )
 
+        elif variable == "ready_expire":
+            if value.lower() == "none":
+                self.update_channel_config(variable, None)
+                client.reply(
+                    self.channel, member, "Removed {0} default value".format(variable)
+                )
+            else:
+                try:
+                    seconds = utils.format_timestring(value.split(" "))
+                except Exception as e:
+                    client.reply(self.channel, member, str(e))
+                    return
+                self.update_channel_config(variable, seconds)
+                client.reply(
+                    self.channel,
+                    member,
+                    "Set '{0}' {1} as default value".format(seconds, variable),
+                )
+
         elif variable == "match_livetime":
             if value.lower() == "none":
                 self.update_channel_config(variable, None)
@@ -4140,6 +4197,33 @@ class Channel:
                     )
 
         elif variable == "require_ready":
+            if value.lower() == "none":
+                for i in pickups:
+                    self.update_pickup_config(i, variable, None)
+                client.reply(
+                    self.channel,
+                    member,
+                    "{0} for {1} pickups will now fallback to the channel's default value.".format(
+                        variable, ", ".join(i.name for i in pickups)
+                    ),
+                )
+            else:
+                try:
+                    seconds = utils.format_timestring(value.split(" "))
+                except Exception as e:
+                    client.reply(self.channel, member, str(e))
+                    return
+                for i in pickups:
+                    self.update_pickup_config(i, variable, seconds)
+                client.reply(
+                    self.channel,
+                    member,
+                    "Set '{0}' {1} for {2} pickups.".format(
+                        seconds, variable, ", ".join(i.name for i in pickups)
+                    ),
+                )
+
+        elif variable == "ready_expire":
             if value.lower() == "none":
                 for i in pickups:
                     self.update_pickup_config(i, variable, None)
