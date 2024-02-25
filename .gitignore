@@ -10,6 +10,7 @@
 /dist
 /.idea
 /.black.diff
+/.python-version
 
 database.sqlite3
 logs/
