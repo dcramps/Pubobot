@@ -24,7 +24,9 @@ ExprTestCase = Tuple[str, Dict[str, str]]
         )
     ],
 )
-def test_compile_simple_expression(expr: str, pattern: str, testcases: List[ExprTestCase]):
+def test_compile_simple_expression(
+    expr: str, pattern: str, testcases: List[ExprTestCase]
+):
     regex = compile_simple_expression(expr)
     assert regex.pattern == pattern
 

@@ -152,6 +152,19 @@ class Messenger:
     def message(self, collect: int = 1):
         return Message(collect, self, self.loop)
 
+    async def react(
+        self,
+        user: Union[int, discord.user.BaseUser, discord.abc.User],
+        message: discord.Message,
+        emoji: str,
+    ):
+        if isinstance(user, int):
+            user = self.context.members[user]
+        return await dpytest.add_reaction(user, message, emoji)
+
+    async def empty_queue(self):
+        return await dpytest.empty_queue()
+
     async def send_message(self, msg: str, member: Union[discord.Member, int] = 0):
         if isinstance(member, int):
             member = self.context.members[member]

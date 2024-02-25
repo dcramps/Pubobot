@@ -7,6 +7,16 @@ from typing import TypeVar, Dict, Iterable, Tuple, Callable
 T = TypeVar("T")
 
 
+def simple_match(expr: str, string: str):
+    regex = compile_simple_expression(expr)
+    return regex.match(string)
+
+
+def simple_search(expr: str, string: str):
+    regex = compile_simple_expression(expr)
+    return regex.search(string)
+
+
 def compile_simple_expression(expr: str) -> re.Pattern:
     """Compile a simplified expression into a regular expression.
 
