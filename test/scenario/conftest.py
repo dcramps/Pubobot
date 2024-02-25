@@ -91,7 +91,9 @@ class Context:
         channel_name: str,
         member_count: int,
     ) -> "Context":
-        guild = dpytest.back.make_guild(guild_name)
+        guild = dpytest.back.make_guild(guild_name)  # type: ignore
+
+        assert client.user
         dpytest.back.make_member(
             dpytest.back.get_state().user, guild, nick=client.user.name + f"_nick"
         )
