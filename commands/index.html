@@ -1,0 +1,908 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.11">
+    
+    
+      
+        <title>Commands - Commands</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#actions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Commands" class="md-header__button md-logo" aria-label="Commands" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Commands
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Commands" class="md-nav__button md-logo" aria-label="Commands" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Commands
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Commands
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Commands
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    <span class="md-ellipsis">
+      Info
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#picking-teams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Picking Teams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ranking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ranking
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-moderators-and-above" class="md-nav__link">
+    <span class="md-ellipsis">
+      For moderators and above
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-admins" class="md-nav__link">
+    <span class="md-ellipsis">
+      For admins
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moderation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Moderation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Actions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    <span class="md-ellipsis">
+      Info
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#picking-teams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Picking Teams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ranking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ranking
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-moderators-and-above" class="md-nav__link">
+    <span class="md-ellipsis">
+      For moderators and above
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-admins" class="md-nav__link">
+    <span class="md-ellipsis">
+      For admins
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moderation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Moderation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Commands</h1>
+
+<h2 id="actions">Actions</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.add pickup[ pickup ..]] or +&lt;u&gt;pickup&lt;/u&gt;[ pickup ..]]</code></td>
+<td>Adds you to specified pickups.</td>
+</tr>
+<tr>
+<td><code>.add or ++</code></td>
+<td>Adds you to all active pickups.</td>
+</tr>
+<tr>
+<td><code>.remove pickup[ pickup ...] or -[pickup[ pickup ..]]</code></td>
+<td>Removes you from specified pickups.</td>
+</tr>
+<tr>
+<td><code>.remove or --</code></td>
+<td>Removes you from all pickups.</td>
+</tr>
+<tr>
+<td><code>.expire time</code></td>
+<td>Sets new time delay after you will be removed from all pickups, example: '.expire 1h 2m 3s'.</td>
+</tr>
+<tr>
+<td><code>.default_expire time</code>, 'afk' or 'none'</td>
+<td>Set your personal default .expire time or set autoremove on afk status.</td>
+</tr>
+<tr>
+<td><code>.sub</code></td>
+<td>Request sub for last game.</td>
+</tr>
+<tr>
+<td><code>.allowoffline or .ao</code></td>
+<td>Gives you immunity from getting removed by offline or afk statuses until a pickup with you starts. (done for mobile devices users).</td>
+</tr>
+<tr>
+<td><code>.subscribe pickup[ pickup ..]]</code></td>
+<td>Adds the promotion role of specified pickup(s) to you.</td>
+</tr>
+<tr>
+<td><code>.unsubscribe pickup[ pickup ..]]</code></td>
+<td>Removes the promotion role of specified pickup(s) from you.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="info">Info</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.who [pickup[ pickup ...]]</code></td>
+<td>List of users added to a pickups.</td>
+</tr>
+<tr>
+<td><code>.pickups</code></td>
+<td>List of all pickups on the channel.</td>
+</tr>
+<tr>
+<td><code>.pickup_groups</code></td>
+<td>List of pickup groups configured on the channel.</td>
+</tr>
+<tr>
+<td><code>.expire</code></td>
+<td>Shows you how much time left before you will be removed from all pickups.</td>
+</tr>
+<tr>
+<td><code>.lastgame [@nick or pickup]</code></td>
+<td>Show last pickup, or last pickup by specified argument.</td>
+</tr>
+<tr>
+<td><code>.liast [void or mode]</code></td>
+<td>Show last pickup and list of current players in.</td>
+</tr>
+<tr>
+<td><code>.top [pickup] [weekly or monthly or yearly]</code></td>
+<td>Shows you most active players.</td>
+</tr>
+<tr>
+<td><code>.top [pickup] [weekly or monthly or yearly]</code></td>
+<td>Shows you most active players.</td>
+</tr>
+<tr>
+<td><code>.stats [nick or pickup]</code></td>
+<td>Shows you overall stats or stats for specified argument.</td>
+</tr>
+<tr>
+<td><code>.ip [pickup or default]</code></td>
+<td>Shows you ip of last pickup or specified pickup.</td>
+</tr>
+<tr>
+<td><code>.map pickup</code></td>
+<td>Print a random map for specified pickup.</td>
+</tr>
+<tr>
+<td><code>.maps pickup</code></td>
+<td>Show all maps for specified pickup.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="picking-teams">Picking Teams</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.cointoss or .ct [heads or tails]</code></td>
+<td>Toss a coin.</td>
+</tr>
+<tr>
+<td><code>.pick @nick</code></td>
+<td>Pick a user to your team.</td>
+</tr>
+<tr>
+<td><code>.put @nick alpha or beta</code></td>
+<td>Put player in specified team (available only for users with moderator or admin rights).</td>
+</tr>
+<tr>
+<td><code>.subfor @nick</code></td>
+<td>Become a substitute for specified player.</td>
+</tr>
+<tr>
+<td><code>.capfor alpha or beta</code></td>
+<td>Become a captain of specified team.</td>
+</tr>
+<tr>
+<td><code>.teams</code></td>
+<td>Show teams for current pickup.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ranking">Ranking</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.leaderboard [page] or .lb [page]</code></td>
+<td>Show top players by rating.</td>
+</tr>
+<tr>
+<td><code>.rank</code></td>
+<td>Show your rating stats.</td>
+</tr>
+<tr>
+<td><code>.reportlose or .rl</code></td>
+<td>Report loss on your current match (available for captains only).</td>
+</tr>
+<tr>
+<td><code>.reportdraw .draw or .rd</code></td>
+<td>Report draw on your current match (available for captains only, captain of other team has to confirm).</td>
+</tr>
+<tr>
+<td><code>.reportcancel or .rc</code></td>
+<td>Report cancel on your current match (available for captains only, captain of other team has to confirm).</td>
+</tr>
+<tr>
+<td><code>.matches</code></td>
+<td>Show all active matches on the channel.</td>
+</tr>
+<tr>
+<td><code>.ranks_table</code></td>
+<td>Show rank to rating table.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="for-moderators-and-above">For moderators and above</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.reportwin or .rw match_id alpha or beta</code></td>
+<td>Report win on specified match for specified team.</td>
+</tr>
+<tr>
+<td><code>.undo_ranks match_id</code></td>
+<td>Undo all rating changes for a previously reported match.</td>
+</tr>
+<tr>
+<td><code>.seed @nick rating</code></td>
+<td>Set specified player's rating points, also this will disable initial rating calibration for this user.</td>
+</tr>
+<tr>
+<td><code>.reset_ranks</code></td>
+<td>Reset all rating data on the channel. Warning, this action is irreversible!</td>
+</tr>
+</tbody>
+</table>
+<h2 id="for-admins">For admins</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.reset_ranks</code></td>
+<td>Reset all rating data on the channel. Warning, this action is irreversible!</td>
+</tr>
+</tbody>
+</table>
+<h2 id="moderation">Moderation</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.noadd @nick [time] [reason]</code></td>
+<td>Disallow user to play pickups.</td>
+</tr>
+<tr>
+<td><code>.noadds</code></td>
+<td>Show list of users who are disallowed to play pickups.</td>
+</tr>
+<tr>
+<td><code>.forgive @nick</code></td>
+<td>Allow user from noadds list to play pickups.</td>
+</tr>
+<tr>
+<td><code>.phrase @nick text</code></td>
+<td>Set specified reply for specified user after .add command.</td>
+</tr>
+<tr>
+<td><code>.remove_player @nick</code></td>
+<td>Remove specified players from all pickups.</td>
+</tr>
+<tr>
+<td><code>.reset</code></td>
+<td>Removes all players from all pickups.</td>
+</tr>
+<tr>
+<td><code>.start pickup</code></td>
+<td>Force a pickup to start with deficient players count.</td>
+</tr>
+<tr>
+<td><code>.cancel_match match_id</code></td>
+<td>Cancel an active match, match_id can be found at the beginning of pickup start message.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.enable_pickups</code></td>
+<td>Turn on the pickup bot on the channel.</td>
+</tr>
+<tr>
+<td><code>.disable_pickups</code></td>
+<td>Turn off the bot and delete all configurations/stats on the channel. Warning, this action is irreversible!</td>
+</tr>
+<tr>
+<td><code>.add_pickups name:players[ name:players ...]</code></td>
+<td>Create new pickups.</td>
+</tr>
+<tr>
+<td><code>.remove_pickups pickup[ pickup ...]</code></td>
+<td>Delete specified pickups.</td>
+</tr>
+<tr>
+<td><code>.add_pickup_group group_name pickup[ pickup...]</code></td>
+<td>Create a pickup group which will contain specified pickups.</td>
+</tr>
+<tr>
+<td><code>.remove_pickup_group group_name</code></td>
+<td>Delete specified pickup group.</td>
+</tr>
+<tr>
+<td><code>.reset_stats</code></td>
+<td>Delete all channel statistics.</td>
+</tr>
+<tr>
+<td><code>.cfg</code></td>
+<td>Show global channel configuration variables.</td>
+</tr>
+<tr>
+<td><code>.pickup_cfg pickup</code></td>
+<td>Show specified pickup configuration variables.</td>
+</tr>
+<tr>
+<td><code>.set_ao_for_all name 0 or 1</code></td>
+<td>Allow/disallow offline for all users of specific pickup kind.</td>
+</tr>
+<tr>
+<td><code>.set_default variable value</code></td>
+<td>Set a global variable value. Availible variables: admin_role, moderator_role, captains_role, prefix, default_bantime, ++_req_players, startmsg, submsg, ip, password, maps, pick_captains, pick_teams, promotion_role, promotion_delay, blacklist_role, whitelist_role, require_ready, ranked, ranked_calibrate, ranked_multiplayer, help_answer.</td>
+</tr>
+<tr>
+<td><code>.set_pickups pickup[ pickup...] variable value</code></td>
+<td>Set variables for specified pickups. Availible variables: maxplayers, startmsg, submsg, ip, password, maps, pick_captains, pick_teams, pick_order, promotion_role, blacklist_role, whitelist_role, captains_role, require_ready, ranked, help_answer.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-variables">Configuration Variables</h3>
+<ul>
+<li>For any variable set 'none' value to disable.</li>
+<li>admin_role role_name - Users with this role will have access to configuration and moderation commands.</li>
+<li>moderator_role role_name - Users with this role will have access to moderation commands.</li>
+<li>captains_role role_name - Random captains will be preferred to this role, also '.capfor' command will be only available for users with this role if it's set.</li>
+<li>prefix symbol - Set prefix before all bot's commands, default '.'.</li>
+<li>default_bantime time - Set default time for .noadd command.</li>
+<li>++_req_players number - Set minimum pickup required players amount for '++' command or '.add' command without argument, so users won't add to 1v1/2v2 pickups unintentionally. Default value: 5.</li>
+<li>startmsg text - Set message on a pickup start. Use %ip% and %password% in text to represent IP and password.</li>
+<li>start_pm_msg text - Set private message on a pickup start. Use %pickup_name%, %ip%, %password%, and %channel% to represent its values.</li>
+<li>submsg text - Set message on .sub command. Use %pickup_name%, %ip%, %password%, and %promotion_role% to represent its values.</li>
+<li>promotemsg text - Set message on .promote command. Use %promotion_role%, %pickup_name%, and %required_players% to represent its values.</li>
+<li>ip text - Set IP which will be shown in startmsg, submsg, and on .ip command.</li>
+<li>password text - Set password which will be shown in startmsg, submsg, and on .ip command.</li>
+<li>maps map_name[, map_name...] - Set maps.</li>
+<li>pick_captains 0, 1, 2, or 3 - Set if the bot should suggest captains.</li>
+<li>If the variable ranked is 0:<ul>
+<li>0 - Doesn't suggest captains</li>
+<li>1 - Picks captains randomly but with a preference for players having the captain role</li>
+<li>2 - Picks captains randomly</li>
+</ul>
+</li>
+<li>If the variable ranked is 1:<ul>
+<li>0 - Doesn't suggest captains</li>
+<li>1 - Sorts players by player having captain role and player rank and picks two players from the top</li>
+<li>2 - Sorts players by player rank and picks a random pair of adjacent players</li>
+<li>3 - Picks captains randomly</li>
+</ul>
+</li>
+<li>pick_teams value - Set teams pick system the bot should use. Value must be in 'no_teams', 'auto', or 'manual'.</li>
+<li>no_teams - Bot will only print players list and captains if needed.</li>
+<li>auto - Bot will print teams balanced by rating on ranked pickups or random teams.</li>
+<li>manual - Users will have to pick teams using teams picking commands.</li>
+<li>team_emojis emoji emoji - Set custom team emojis.</li>
+<li>team_names alpha_name beta_name - Set custom team names (commands with team names will change accordingly).</li>
+<li>pick_order order - Force specified teams picking order. Example value: 'abababba'.</li>
+<li>promotion_role role_name - Set promotion_role to highlight on .promote and .sub commands.</li>
+<li>promotion_delay time - Set time delay between .promote and .sub commands can be used.</li>
+<li>blacklist_role role_name - Users with this role will not be able to add to specified pickups.</li>
+<li>whitelist_role role_name - Only users with this role will be able to add to specified pickups.</li>
+<li>require_ready none or time - If set, users will have to confirm themselves using '.ready' command.</li>
+<li>ranked 0 or 1 - Set pickup(s) to have a rating system and make players have to report their matches.</li>
+<li>ranked_calibrate 0 or 1 - Set to enable rating boost on the first 10 user's matches, default on. Only for 'set_default'.</li>
+<li>ranked_multiplayer 8 to 256 - Change rating K-factor (gain/loss multiplier), default 32. Only for 'set_default'.</li>
+<li>ranked_streaks 1 or 0 - Set to enable ranked streaks (starting from x1.5 for (3 wins/loses in a row) to x3.0 (6+ wins/loses in a row)).</li>
+<li>initial_rating integer - Set starting rating for new players (default is 1400).</li>
+<li>global_expire time, afk, or none - Set default_expire value for users without personal settings.</li>
+<li>match_livetime time - Set a time limit before a match gets aborted as timed out.</li>
+<li>help_answer text - Set an answer on .help command.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.8fd75fb4.min.js"></script>
+      
+    
+  </body>
+</html>
