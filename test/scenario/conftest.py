@@ -3,7 +3,6 @@ import pytest_asyncio
 import time
 import asyncio
 
-from contextlib import AsyncContextDecorator
 from typing import List, Optional, Iterable, Union, Any, Dict
 
 import discord
@@ -191,7 +190,7 @@ class Messenger:
         return dpytest.sent_queue.get_nowait()
 
 
-class Message(AsyncContextDecorator):
+class Message:
     def __init__(
         self,
         collect: int,
