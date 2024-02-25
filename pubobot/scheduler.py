@@ -3,9 +3,13 @@ import time
 from . import console
 
 
+tasks = {}
+next_task = False
+
+
 def init():
     global tasks, next_task
-    tasks = dict()
+    tasks = {}
     next_task = False
 
 

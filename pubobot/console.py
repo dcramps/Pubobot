@@ -62,6 +62,12 @@ class ConsoleCompleter(object):  # Custom completer
             return None
 
 
+thread = None
+log = None
+userinput_queue = Queue()
+alive = False
+
+
 def init(log_dir="logs", enable_input=True):
     global thread, log, userinput_queue, alive
 
@@ -73,11 +79,15 @@ def init(log_dir="logs", enable_input=True):
     log_file = os.path.join(
         log_dir, datetime.datetime.now().strftime("log_%Y-%m-%d-%H:%M")
     )
+
+    if log:
+        log.close()
+
     log = open(log_file, "w", encoding="utf-8")
 
     userinput_queue = Queue()
 
-    if enable_input:
+    if enable_input and not thread:
         # init user console
         thread = Thread(target=userinput, name="Userinput")
         thread.daemon = True

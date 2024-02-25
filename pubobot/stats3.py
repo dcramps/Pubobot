@@ -11,9 +11,18 @@ from . import console
 version = 13
 
 
+conn = None
+c = None
+last_match = -1
+
+
 def init(db_file="database.sqlite3"):
     global conn, c, last_match
     dbexists = isfile(db_file)
+
+    if conn:
+        conn.close()
+
     conn = sqlite3.connect(db_file)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()

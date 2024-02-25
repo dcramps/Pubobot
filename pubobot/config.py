@@ -16,6 +16,10 @@ class Config:
     FIRST_INIT_MESSAGE = "Pickups enabled"
 
 
+cfg = Config()
+data = {}
+
+
 def init(config_file="config.cfg"):
     global cfg
     cfg = Config()

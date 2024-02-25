@@ -1,6 +1,6 @@
 import re
 
-from typing import TypeVar, Dict, Iterable, Tuple
+from typing import TypeVar, Dict, Iterable, Tuple, Callable
 
 T = TypeVar("T")
 
@@ -100,7 +100,14 @@ class PickStageMatcher:
         beta_team = self._match_ready_team(fields["beta_team"])
         return PickStageReadyMatch(fields, alpha_team, beta_team)
 
-    def _match(self, text: str, cls: T, patterns: Iterable[re.Pattern]) -> T:
+    def _match(
+        self,
+        text: str,
+        factory: Callable[
+            [Dict[str, str], Iterable[str], Iterable[str], Iterable[Tuple[int, str]]], T
+        ],
+        patterns: Iterable[re.Pattern],
+    ) -> T:
         pos = 0
         fields = {}
 
@@ -116,9 +123,9 @@ class PickStageMatcher:
         beta_team = self._match_picked(fields["beta_team"])
         unpicked = self._match_unpicked(fields["unpicked"])
 
-        return cls(fields, alpha_team, beta_team, unpicked)
+        return factory(fields, alpha_team, beta_team, unpicked)
 
-    def _match_picked(self, text: str) -> Iterable[Tuple[str]]:
+    def _match_picked(self, text: str) -> Iterable[str]:
         pos = 0
 
         picked = []

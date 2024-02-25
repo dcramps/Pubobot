@@ -6,6 +6,10 @@ import time
 from . import console, config, bot, stats3
 
 
+ready = False
+send_queue = []
+
+
 def init():
     global ready, send_queue
     ready = False
@@ -150,13 +154,13 @@ def get_member_by_id(channel, highlight):
         return None
 
 
-def create_client():
+def create_client(loop=None):
     ### discord events ###
     intents = discord.Intents.default()
     intents.presences = True
     intents.members = True
     intents.typing = False
-    c = discord.Client(intents=intents)
+    c = discord.Client(intents=intents, loop=loop)
 
     @c.event
     async def on_ready():

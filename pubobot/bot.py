@@ -39,6 +39,14 @@ team_emojis = [
 ]
 
 
+channels = []
+channels_list = []
+active_pickups = []
+active_matches = []
+allowoffline = []  # users with !allowoffline
+waiting_reactions = {}  # {message_id: function}
+
+
 def init():
     global \
         channels, \
@@ -51,8 +59,8 @@ def init():
     channels_list = []
     active_pickups = []
     active_matches = []
-    allowoffline = []  # users with !allowoffline
-    waiting_reactions = dict()  # {message_id: function}
+    allowoffline = []
+    waiting_reactions = {}
 
 
 class UnpickedPool:
