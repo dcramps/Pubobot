@@ -50,6 +50,7 @@ async def pbot_client(tmp_path):
 
     console.terminate()
     await background_task
+    await dpytest.empty_queue()
 
 
 @pytest_asyncio.fixture
