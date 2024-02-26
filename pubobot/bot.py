@@ -1470,13 +1470,15 @@ class Channel:
             )
             return
 
-        is_alpha_capt = member == match.alpha_team[0]
-        is_beta_capt = member == match.beta_team[0]
-
         team, enemy, turn = None, None, ""
 
-        def my_turn(match):
-            return match.pick_order and match.pick_order[match.pick_step] == turn
+        def my_turn():
+            return (
+                match and match.pick_order and match.pick_order[match.pick_step] == turn
+            )
+
+        is_alpha_capt = member == match.alpha_team[0]
+        is_beta_capt = member == match.beta_team[0]
 
         if is_alpha_capt:
             team, enemy, turn = match.alpha_team, match.beta_team, "a"
@@ -1486,7 +1488,7 @@ class Channel:
             client.reply(self.channel, member, "You are not a captain.")
             return
 
-        if not my_turn(match):
+        if not my_turn():
             client.reply(self.channel, member, "Not your turn to pick.")
             return
 
@@ -1527,7 +1529,7 @@ class Channel:
         # Add picks one by one
         for player in picks:
             # Stop if the user has exhasuted his turn
-            if not my_turn(match):
+            if not my_turn():
                 break
 
             team.append(player)
@@ -1537,7 +1539,7 @@ class Channel:
 
         # If a player remains, add to the team with the current turn
         if len(match.unpicked_pool) == 1:
-            if my_turn(match):
+            if my_turn():
                 team.append(match.unpicked_pool.first())
             else:
                 enemy.append(match.unpicked_pool.first())
