@@ -8,14 +8,14 @@ from matcher import PickStageMatcher
 
 
 @pytest.mark.asyncio
-@pytest.mark.scenario(guild="Example", channel="General", members=10)
+@pytest.mark.scenario(guild="Example", channel="General", members=20)
 @pytest.mark.pickup(
     name="elim",
-    players=8,
+    players=12,
     config={
         "pick_captains": "2",
         "pick_teams": "manual",
-        "pick_order": "abbaab",
+        "pick_order": "abbaabbaab",
     },
 )
 async def test_multi_pick(pbot, pickup):
@@ -58,6 +58,10 @@ async def test_multi_pick(pbot, pickup):
     alpha_team = [alpha_capt]
     beta_team = [beta_capt]
 
+    # Zero picks
+    async with pbot.interact(f"!p", alpha_capt) as msg:
+        assert "You must specify a player to pick!" in msg.content
+
     # Have alpha capt pick one
     num1, pick1 = unpicked.popleft()
     async with pbot.interact(f"!p {num1}", alpha_capt) as msg:
@@ -98,10 +102,41 @@ async def test_multi_pick(pbot, pickup):
     # Alpha capt picks three, only the first two should be added and the last should go to beta team
     num1, pick1 = unpicked.popleft()
     num2, pick2 = unpicked.popleft()
-    num3, pick3 = unpicked.popleft()
+    num3, _ = unpicked[0]
 
     async with pbot.interact(f"!p {num1} <@{pick2.id}> {num3}", alpha_capt) as msg:
-        alpha_team.extend([pick1, pick2])
+        alpha_team.append(pick1)
+        alpha_team.append(pick2)
+
+        match = matcher.match_turn(msg.content)
+        assert match
+        assert match.alpha_team == [p.nick for p in alpha_team]
+        assert match.beta_team == [p.nick for p in beta_team]
+
+    # Beta capt picks two, but has duplicate picks
+    num1, pick1 = unpicked.popleft()
+    num2, pick2 = unpicked.popleft()
+
+    async with pbot.interact(f"!p <@{pick1.id}> {num1} {num2}", beta_capt) as msg:
+        beta_team.append(pick1)
+        beta_team.append(pick2)
+
+        match = matcher.match_turn(msg.content)
+        assert match
+        assert match.alpha_team == [p.nick for p in alpha_team]
+        assert match.beta_team == [p.nick for p in beta_team]
+
+    # Alpha capt tries to pick more than what's left
+    num1, pick1 = unpicked.popleft()
+    num2, pick2 = unpicked.popleft()
+    num3, pick3 = unpicked.popleft()
+    num4, _ = num3, pick3
+
+    async with pbot.interact(f"!p {num1} {num2} {num3} {num4}", alpha_capt) as msg:
+        alpha_team.append(pick1)
+        alpha_team.append(pick2)
+
+        # Beta team should get the last player
         beta_team.append(pick3)
 
         match = matcher.match_ready(msg.content)

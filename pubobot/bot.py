@@ -1497,16 +1497,20 @@ class Channel:
             if not m:
                 continue
 
+            player = None
             if m["pos"] is not None:
                 pos = int(m["pos"])
                 player = match.unpicked_pool.get(pos)
-                picks.append(player)
             elif m["id"] is not None:
                 target_id = int(m["id"])
                 _, player = match.unpicked_pool.get_by_player_id(target_id)
-                picks.append(player)
             else:
                 continue
+
+            # Do not allow a player to get picked more than once, i.e. if
+            # picked by pos and by mention
+            if player not in picks:
+                picks.append(player)
 
         if not picks:
             client.reply(self.channel, member, "You must specify a player to pick!")
@@ -1515,7 +1519,7 @@ class Channel:
         # Add picks one by one
         added = []
         for player in picks:
-            # Stop parsing if the user has exhasuted his turn
+            # Stop if the user has exhasuted his turn
             if not my_turn(match):
                 break
 
