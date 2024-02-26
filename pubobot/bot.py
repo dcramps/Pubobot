@@ -5,10 +5,10 @@ import time
 import datetime
 import re
 import random
-import discord
+from discord import errors
 from itertools import combinations
-from . import client, config, console, memberformatter, stats3, scheduler, utils
-from typing import List, OrderedDict
+from collections import OrderedDict
+from . import client, config, console, stats3, scheduler, utils
 
 max_expire_time = 6 * 60 * 60  # 6 hours
 max_bantime = 30 * 24 * 60 * 60 * 12 * 3  # 30 days * 12 * 3
@@ -143,7 +143,7 @@ class UnpickedPool:
 
 
 class Match:
-    def __init__(self, pickup, players: List[discord.Member]):
+    def __init__(self, pickup, players):
         global matches_step
         # set match id
         stats3.last_match += 1
@@ -212,8 +212,8 @@ class Match:
                     self.captains = random.sample(self.players, 2)
 
             elif pick_captains == 1 and self.captains_role:
-                self.captains: List[discord.Member] = []
-                candidates: List[discord.Member] = list(
+                self.captains = []
+                candidates = list(
                     filter(
                         lambda x: self.captains_role in [role.id for role in x.roles],
                         self.players,
@@ -262,8 +262,8 @@ class Match:
             elif self.pick_teams == "manual":
                 self.pick_step = 0
                 unpicked = list(players)
-                self.alpha_team: List[discord.Member] = []
-                self.beta_team: List[discord.Member] = []
+                self.alpha_team = []
+                self.beta_team = []
                 if self.captains:
                     self.alpha_team.append(self.captains[0])
                     self.beta_team.append(self.captains[1])
@@ -335,10 +335,10 @@ class Match:
         alive_time = frametime - self.start_time
         if self.state == "waiting_ready":
             if alive_time > self.require_ready:
-                not_ready: List[discord.Member] = list(
+                not_ready = list(
                     filter(lambda x: x.id not in self.players_ready, self.players)
                 )
-                self.players: List[discord.Member] = list(
+                self.players = list(
                     filter(lambda x: x.id in self.players_ready, self.players)
                 )
                 not_ready = ["<@{0}>".format(i.id) for i in not_ready]
@@ -392,7 +392,8 @@ class Match:
         if len(self.alpha_team):
             if self.ranked:
                 alpha_str = "❲{1}❳ 〈__{0}__〉".format(
-                    sum([self.ranks[i.id] for i in self.alpha_team]) // len(self.alpha_team),
+                    sum([self.ranks[i.id] for i in self.alpha_team])
+                    // len(self.alpha_team),
                     " + ".join(
                         [
                             "`{0}{1}`".format(
@@ -443,7 +444,7 @@ class Match:
         if self.ranked:
             player_strs = []
             for position, player in sorted(self.unpicked_pool.all.items()):
-                player_strs.append(
+                player_strs.apppend(
                     "{0}. `{1}`".format(
                         utils.rating_to_icon(self.ranks[player.id]),
                         (player.nick or player.name).replace("`", ""),
@@ -629,11 +630,10 @@ class Match:
         self.unpicked_pool.clear()
 
     def cancel_match(self):
+        formatted_list = memberformatter.format_list(self.players, True)
         client.notice(
             self.channel,
-            "{0} your match has been canceled.".format(
-                ", ".join(["<@{0}>".format(i.id) for i in self.players])
-            ),
+            "{0} your match has been canceled.".format(formatted_list),
         )
         if self.ready_message and self.ready_message.id in waiting_reactions.keys():
             waiting_reactions.pop(self.ready_message.id)
@@ -704,12 +704,12 @@ class Match:
     def ready_refresh(self):
         not_ready = list(filter(lambda i: i.id not in self.players_ready, self.players))
         if len(not_ready):
-            content = "*({0})* The **{1}** pickup has filled\r\n".format(
-                self.id, self.pickup.name
+            content = (
+                "*({0})* The **{1}** pickup has filled\r\n".format(
+                    self.id, self.pickup.name
+                )
             )
-            content += "Waiting on: {0}.\r\n".format(
-                memberformatter.format_list(None, not_ready, False)
-            )
+            content += "Waiting on: {0}.\r\n".format(self._players_to_str(not_ready))
             content += "Please react with :ballot_box_with_check: to **check-in** or :no_entry: to **abort**!"
             client.edit_message(self.ready_message, content)
         else:
@@ -756,7 +756,7 @@ class ReadyMark:
 
 class Pickup:
     def __init__(self, channel, cfg):
-        self.players: List[discord.Member] = []
+        self.players = []  # [discord member objects]
         self.users_last_ready = {}
         self.name = cfg["pickup_name"]
         self.lastmap = None
@@ -861,11 +861,10 @@ class Channel:
                         affected_channels.append(pu.channel)
 
         for i in affected_channels:
+            formatted_list = memberformatter.format_list(i.to_remove, False)
             client.notice(
                 i.channel,
-                "{0} was removed from all pickups! (pickup started on another channel)".format(
-                    ", ".join(["**{0}**".format(i.nick or i.name) for i in i.to_remove])
-                ),
+                "{0} was removed from all pickups! (pickup started on another channel)".format(formatted_list),
             )
             i.to_remove = []
             i.update_topic()
@@ -1301,27 +1300,22 @@ class Channel:
             client.reply(self.channel, member, "You have no right for this!")
 
     def who(self, member, args):
-        templist = []
+        pickup_strings = []
         for pickup in (
             pickup
             for pickup in self.pickups
             if pickup.players != [] and (pickup.name.lower() in args or args == [])
         ):
-            templist.append(
-                "[**{0}** ({1}/{2})] {3}".format(
-                    pickup.name,
-                    len(pickup.players),
-                    pickup.cfg["maxplayers"],
-                    "/".join(
-                        [
-                            "`" + (i.nick or i.name).replace("`", "") + "`"
-                            for i in pickup.players
-                        ]
-                    ),
-                )
+            pickup_string = "[**{0}** ({1}/{2})] {3}".format(
+                pickup.name,
+                len(pickup.players),
+                pickup.cfg["maxplayers"],
+                memberformatter.format_list(pickup.players, False)
             )
-        if templist != []:
-            client.notice(self.channel, " ".join(templist))
+            pickup_strings.append(pickup_string)
+
+        if len(pickup_strings):
+            client.notice(self.channel, "\n".join(pickup_strings))
         else:
             if args:
                 client.notice(
@@ -1360,16 +1354,18 @@ class Channel:
         else:
             l = self.lastgame_cache
         if l:
-            n = l[0]
+            pickup_num = l[0]
             ago = datetime.timedelta(seconds=int(time.time() - int(l[1])))
-            gt = l[2]
+            gametype = l[2]
             if l[4] and l[5]:
-                players = "[{0}] vs [{1}]".format(l[4], l[5])
+                red = memberformatter.format_list(l[4], False)
+                blue = memberformatter.format_list(l[5], False)
+                players = "{0}\n{1}".format(red, blue)
             else:
-                players = ", ".join(l[3].strip().split(" "))
+                players = memberformatter.format_list(l[3], False)
             client.notice(
                 self.channel,
-                "Pickup #{0}, {1} ago [{2}]: {3}".format(n, ago, gt, players),
+                "{0}, {1}, {2} ago\n{3}".format(gametype, pickup_num, ago, players),
             )
         else:
             client.notice(self.channel, "No pickups found.")

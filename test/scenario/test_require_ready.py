@@ -26,7 +26,7 @@ pytestmark = [
 id_pattern = compile_simple_expression("<@{id}>")
 
 ready_message_pattern = compile_simple_expression(
-    "__*({match_id})* **{game}** pickup is now on waiting ready state!__\r\n"
+    "*({match_id})* The **{game}** pickup has filled\r\n"
     "Waiting on: {waiting_list}.\r\n"
     "Please react with :ballot_box_with_check: to **check-in** or :no_entry: to **abort**!"
 )
@@ -35,10 +35,8 @@ not_ready_message_pattern = compile_simple_expression(
     "**{user}** is not ready!\r\n" "Reverting **{game}** to gathering state..."
 )
 
-
 emoji_ready = "\u2611"
 emoji_abort = "\u26d4"
-
 
 async def test_require_ready_all_ready(pbot, pickup):
     players = pbot.members[: pickup.players]
@@ -60,7 +58,7 @@ async def test_require_ready_all_ready(pbot, pickup):
         assert match
         ready_msg = msg
 
-    # Give the bot a bit of time to edit it's own message
+    # Give the bot a bit of time to edit its own message
     await asyncio.sleep(0.005)
 
     # Match ready string
