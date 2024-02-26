@@ -392,8 +392,7 @@ class Match:
         if len(self.alpha_team):
             if self.ranked:
                 alpha_str = "❲{1}❳ 〈__{0}__〉".format(
-                    sum([self.ranks[i.id] for i in self.alpha_team])
-                    // len(self.alpha_team),
+                    sum([self.ranks[i.id] for i in self.alpha_team]) // len(self.alpha_team),
                     " + ".join(
                         [
                             "`{0}{1}`".format(
@@ -444,7 +443,7 @@ class Match:
         if self.ranked:
             player_strs = []
             for position, player in sorted(self.unpicked_pool.all.items()):
-                player_strs.apppend(
+                player_strs.append(
                     "{0}. `{1}`".format(
                         utils.rating_to_icon(self.ranks[player.id]),
                         (player.nick or player.name).replace("`", ""),
