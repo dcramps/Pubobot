@@ -1528,7 +1528,7 @@ class Channel:
 
         # Add picks one by one
         for player in picks:
-            # Stop if the user has exhasuted his turn
+            # Stop if the user has exhausted his turn
             if not my_turn():
                 break
 

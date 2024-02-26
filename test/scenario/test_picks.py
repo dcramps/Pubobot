@@ -107,7 +107,7 @@ async def test_multi_pick(pbot, pickup):
     async with pbot.interact(f"!p {num1}", beta_capt) as msg:
         assert "Not your turn to pick." in msg.content
 
-    # Alpha capt picks three, only the first two should be added and the last should go to beta team
+    # Alpha capt picks three, only the first two should be added
     num1, pick1 = unpicked.popleft()
     num2, pick2 = unpicked.popleft()
     num3, _ = unpicked[0]
@@ -125,7 +125,9 @@ async def test_multi_pick(pbot, pickup):
     num1, pick1 = unpicked.popleft()
     num2, pick2 = unpicked.popleft()
 
-    async with pbot.interact(f"!p <@{pick1.id}> {num1} {num2}", beta_capt) as msg:
+    async with pbot.interact(
+        f"!p <@{pick1.id}> {num1} <@{pick2.id}> {num2}", beta_capt
+    ) as msg:
         beta_team.append(pick1)
         beta_team.append(pick2)
 
