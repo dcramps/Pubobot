@@ -59,8 +59,16 @@ async def test_multi_pick(pbot, pickup):
     beta_team = [beta_capt]
 
     # Zero picks
-    async with pbot.interact(f"!p", alpha_capt) as msg:
+    async with pbot.interact("!p", alpha_capt) as msg:
         assert "You must specify a player to pick!" in msg.content
+
+    # Try to add a player not in the list by position
+    async with pbot.interact("!p 20", alpha_capt) as msg:
+        assert "Specified player are not in unpicked players list." in msg.content
+
+    # Try to add a player not in the list by mention
+    async with pbot.interact(f"!p <@{pbot.members[-1].id}>", alpha_capt) as msg:
+        assert "Specified player are not in unpicked players list." in msg.content
 
     # Have alpha capt pick one
     num1, pick1 = unpicked.popleft()

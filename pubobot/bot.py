@@ -1490,6 +1490,10 @@ class Channel:
             client.reply(self.channel, member, "Not your turn to pick.")
             return
 
+        if not args:
+            client.reply(self.channel, member, "You must specify a player to pick!")
+            return
+
         # Parse player input
         picks = []
         for arg in args:
@@ -1509,32 +1513,27 @@ class Channel:
 
             # Do not allow a player to get picked more than once, i.e. if
             # picked by pos and by mention
-            if player not in picks:
+            if player and player not in picks:
                 picks.append(player)
 
         if not picks:
-            client.reply(self.channel, member, "You must specify a player to pick!")
+            client.reply(
+                self.channel,
+                member,
+                "Specified player are not in unpicked players list.",
+            )
             return
 
         # Add picks one by one
-        added = []
         for player in picks:
             # Stop if the user has exhasuted his turn
             if not my_turn(match):
                 break
 
             team.append(player)
-            added.append(player)
             match.unpicked_pool.remove_player(player)
 
             match.pick_step += 1
-
-        if not added:
-            client.reply(
-                self.channel,
-                member,
-                "Specified player are not in unpicked players list.",
-            )
 
         # If a player remains, add to the team with the current turn
         if len(match.unpicked_pool) == 1:
