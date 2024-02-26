@@ -35,7 +35,7 @@
 | Command                                          | Description                                                                                     |
 |--------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | `.cointoss or .ct [heads or tails]`             | Toss a coin.                                                                                    |
-| `.pick @nick`                            | Pick a user to your team.                                                                       |
+| `.pick @nick [@nick ...]`                       | Pick a user to your team.                                                                       |
 | `.put @nick alpha or beta`               | Put player in specified team (available only for users with moderator or admin rights).          |
 | `.subfor @nick`                          | Become a substitute for specified player.                                                        |
 | `.capfor alpha or beta`                         | Become a captain of specified team.                                                             |
