@@ -39,7 +39,9 @@ async def test_who(pbot, pickup_factory):
     for player in ctf_players[:-1]:
         await pbot.send_message("!j ctf", player)
 
-    for _ in range(18): # 1 message per join, 1 message per "only 1 player needed" message
+    for _ in range(
+        18
+    ):  # 1 message per join, 1 message per "only 1 player needed" message
         await pbot.get_message()
 
     await pbot.send_message("!who", pbot.admin)
