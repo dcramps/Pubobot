@@ -5,6 +5,7 @@ import discord
 from collections import deque
 from matcher import PickStageMatcher
 
+
 @pytest.mark.asyncio
 @pytest.mark.scenario(guild="Example", channel="General", members=20)
 @pytest.mark.pickup(
@@ -16,7 +17,6 @@ from matcher import PickStageMatcher
         "pick_order": "ab",
     },
 )
-
 async def test_last(pbot, pickup):
     players = pbot.members[: pickup.players]
 
@@ -63,5 +63,5 @@ async def test_last(pbot, pickup):
     await pbot.send_message("!last", pbot.admin)
     await pbot.get_message()
 
-    #TODO: Figure out a regex to match the last format
+    # TODO: Figure out a regex to match the last format
     # Match {n} [{game}]: {time} ago\n{alpha_team}\n{beta_team}

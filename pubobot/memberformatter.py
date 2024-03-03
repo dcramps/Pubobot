@@ -14,6 +14,7 @@ def format_list_tuples(
     escaped_names = [get_player_string(player, mention) for player in players]
     return ", ".join(escaped_names)
 
+
 def format_unpicked(unpicked: OrderedDict):
     return ", ".join(
         [

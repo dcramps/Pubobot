@@ -1284,8 +1284,7 @@ class Channel:
             else:
                 players = l[3]
             client.notice(
-                self.channel,
-                f"**Match {match_id} [{gametype}]:** {ago} ago\n{players}"
+                self.channel, f"**Match {match_id} [{gametype}]:** {ago} ago\n{players}"
             )
         else:
             client.notice(self.channel, "No pickups found.")

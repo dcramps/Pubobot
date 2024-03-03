@@ -78,12 +78,16 @@ def test_format_list_mentions(members_with_normal_nicknames):
     )
     assert expected == actual
 
+
 def test_format_unpicked_pool(mocked_members):
     unpicked_pool = pubobot.bot.UnpickedPool(mocked_members).all.items()
     unpicked_pool_data = OrderedDict()
-    
+
     for position, player in unpicked_pool:
-        player.nick = f"{position}" 
+        player.nick = f"{position}"
         unpicked_pool_data[position] = {"player": player}
 
-    assert pubobot.memberformatter.format_unpicked(unpicked_pool_data) == "1. 1, 2. 2, 3. 3, 4. 4"
+    assert (
+        pubobot.memberformatter.format_unpicked(unpicked_pool_data)
+        == "1. 1, 2. 2, 3. 3, 4. 4"
+    )
