@@ -406,7 +406,7 @@ class Match:
         
         # TODO: for tags (`.nomic`, `.tag im retarded`, etc) this will have to change
         # for now though, assume tags is always the ELO rank thingy
-        unpicked_player_data = {}
+        unpicked_player_data = OrderedDict()
         for key, player in self.unpicked_pool.all.items():
             inner = {
                 "player": player,
