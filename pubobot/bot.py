@@ -62,7 +62,6 @@ def init():
     allowoffline = []
     waiting_reactions = {}
 
-
 class UnpickedPool:
     def __init__(self, players):
         self.position_to_players = OrderedDict()
@@ -387,86 +386,35 @@ class Match:
                 self.alpha_icon, alpha_str, self.beta_icon, beta_str, *team_ratings
             )
 
+    def _team_to_str(self, team):
+        if len(team):
+            if self.ranked:
+                team_elo_average = sum([self.ranks[player.id] for player in team]) // len(team)
+                team_player_data = list(map(lambda player: (player, [utils.rating_to_icon(self.ranks[player.id])]), team))
+                team_str = f"{memberformatter.format_list_tuples(team_player_data, False)} [ELO: {team_elo_average}]"
+            else:
+                team_str = f"{memberformatter.format_list(team, False)}"
+        else:
+            team_str = "❲{0}❳".format(self.team_names[0])
+
+        return team_str
+
     def _teams_picking_to_str(self):
         match_id_str = "**Match {0}**".format(self.id)
-        if len(self.alpha_team):
-            if self.ranked:
-                alpha_str = "❲{1}❳ 〈__{0}__〉".format(
-                    sum([self.ranks[i.id] for i in self.alpha_team]) // len(self.alpha_team),
-                    " + ".join(
-                        [
-                            "`{0}{1}`".format(
-                                utils.rating_to_icon(self.ranks[i.id]),
-                                (i.nick or i.name).replace("`", ""),
-                            )
-                            for i in self.alpha_team
-                        ]
-                    ),
-                )
-            else:
-                alpha_str = "❲{0}❳".format(
-                    " + ".join(
-                        [
-                            "`{0}`".format((i.nick or i.name).replace("`", ""))
-                            for i in self.alpha_team
-                        ]
-                    )
-                )
-        else:
-            alpha_str = "❲{0}❳".format(self.team_names[0])
-        if len(self.beta_team):
-            if self.ranked:
-                beta_str = "❲{1}❳ 〈__{0}__〉".format(
-                    sum([self.ranks[i.id] for i in self.beta_team])
-                    // len(self.beta_team),
-                    " + ".join(
-                        [
-                            "`{0}{1}`".format(
-                                utils.rating_to_icon(self.ranks[i.id]),
-                                (i.nick or i.name).replace("`", ""),
-                            )
-                            for i in self.beta_team
-                        ]
-                    ),
-                )
-            else:
-                beta_str = "❲{0}❳".format(
-                    " + ".join(
-                        [
-                            "`{0}`".format((i.nick or i.name).replace("`", ""))
-                            for i in self.beta_team
-                        ]
-                    )
-                )
-        else:
-            beta_str = "❲{0}❳".format(self.team_names[1])
-        if self.ranked:
-            player_strs = []
-            for position, player in sorted(self.unpicked_pool.all.items()):
-                player_strs.append(
-                    "{0}. `{1}`".format(
-                        utils.rating_to_icon(self.ranks[player.id]),
-                        (player.nick or player.name).replace("`", ""),
-                    )
-                )
-            unpicked_str = "[" + ", ".join(player_strs) + "]"
-        else:
-            player_strs = []
-            for position, player in sorted(self.unpicked_pool.all.items()):
-                player_strs.append(
-                    "{0}. `{1}`".format(
-                        position, (player.nick or player.name).replace("`", "")
-                    )
-                )
-            unpicked_str = "[" + ", ".join(player_strs) + "]"
-        return "{0}\n{1} {2}\n{4} {3}\n\n__Unpicked__:\n{5}".format(
-            match_id_str,
-            self.alpha_icon,
-            alpha_str,
-            beta_str,
-            self.beta_icon,
-            unpicked_str,
-        )
+        alpha_str = self._team_to_str(self.alpha_team)
+        beta_str = self._team_to_str(self.alpha_team)
+        
+        # TODO: for tags (`.nomic`, `.tag im retarded`, etc) this will have to change
+        # for now though, assume tags is always the ELO rank thingy
+        unpicked_player_data = {}
+        for key, player in self.unpicked_pool.all.items():
+            inner = {
+                "player": player,
+                "tags": [utils.rating_to_icon(self.ranks[player.id])] if self.ranked else []
+            }
+            unpicked_player_data[key] = inner
+        unpicked_str = memberformatter.format_unpicked(unpicked_player_data)
+        return f"{match_id_str}\n{self.alpha_icon} {alpha_str}\n{self.beta_icon} {beta_str}\n\n__Unpicked__:\n{unpicked_str}"
 
     def _startmsg_to_str(self):
         ipstr = self.pickup.channel.get_value("startmsg", self.pickup)

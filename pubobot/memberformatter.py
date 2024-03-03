@@ -10,9 +10,9 @@ def format_list_tuples(players: List[Tuple[discord.Member, List[str]]], mention 
     escaped_names = [get_player_string(player, mention) for player in players]
     return ", ".join(escaped_names)
 
-def format_unpicked(prefix: str, unpicked: OrderedDict):
-    return "Unpicked: " + ", ".join(
-        [f"{k}. {v.nick if v.nick else v.name}" for k, v in unpicked.items()]
+def format_unpicked(unpicked: OrderedDict):
+    return ", ".join(
+        [f"{k}. {get_player_string((v['player'], v['tags']), False)}" for k, v in unpicked.items()]
     )
 
 ### Utility Functions

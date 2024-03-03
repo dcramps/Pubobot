@@ -110,22 +110,22 @@ class PickStageMatcher:
 
     _body = compile_simple_expression(
         "**Match {match_id}**\n"
-        ":{alpha_emote}: \u2772{alpha_team}\u2773\n"
-        ":{beta_emote}: \u2772{beta_team}\u2773\n\n"
+        ":{alpha_emote}: {alpha_team}\n"
+        ":{beta_emote}: {beta_team}\n\n"
         "__Unpicked__:\n"
-        "[{unpicked}]"
+        "{unpicked}"
     )
 
     _start_footer = compile_simple_expression("\r\n<@{turn_capt_id}> picks first!")
     _turn_footer = compile_simple_expression("\n<@{turn_capt_id}>'s turn to pick!")
 
-    _picked = compile_simple_expression("`{name}`")
-    _unpicked = compile_simple_expression("{num}. `{name}`")
+    _picked = compile_simple_expression("{name}")
+    _unpicked = compile_simple_expression("{num}. {name}")
 
     _ready = compile_simple_expression(
         "**TEAMS READY - Match {match_id}**\r\n\r\n"
-        ":{alpha_emote}: \u2772{alpha_team}\u2773 \n"
-        ":{beta_emote}: \u2772{beta_team}\u2773 \r\n\r\n"
+        ":{alpha_emote}: {alpha_team} \n"
+        ":{beta_emote}: {beta_team} \r\n\r\n"
     )
 
     _ready_member = compile_simple_expression("<@{id}>")
