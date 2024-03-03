@@ -36,29 +36,27 @@ async def test_who(pbot, pickup_factory):
     for player in elim_players[:-1]:
         await pbot.send_message("!j elim", player)
         await pbot.get_message()
+    await pbot.get_message()
+
+    for player in ctf_players[:-1]:
+        await pbot.send_message("!j ctf", player)
+        await pbot.get_message()
+    await pbot.get_message()
 
     await pbot.send_message("!who", pbot.admin)
-    await pbot.get_message()
 
     # Output format should be sane
     async with pbot.message() as msg:
         assert (
             match := simple_match(
-                "[**{game}** ({current}/{total})] {list}", msg.content
+                "[**{elim_game}** ({elim_current}/{elim_total})] {elim_list}\n[**{ctf_game}** ({ctf_current}/{ctf_total})] {ctf_list}",
+                msg.content,
             )
         )
-        assert match["game"] == "elim"
-        assert match["current"] == "7"
-        assert match["total"] == "8"
-        # Don't really care to match["list"] since that's tested by memberformattertests
-
-    for player in ctf_players[:-1]:
-        await pbot.send_message("!j ctf", player)
-        await pbot.get_message()
-
-    await pbot.send_message("!who", pbot.admin)
-    await pbot.get_message()
-
-    # Use newlines for  readability
-    async with pbot.message() as msg:
-        assert "\n" in msg.content
+        assert match["elim_game"] == "elim"
+        assert match["elim_current"] == "7"
+        assert match["elim_total"] == "8"
+        assert match["ctf_game"] == "ctf"
+        assert match["ctf_current"] == "9"
+        assert match["ctf_total"] == "10"
+        # Don't really care to match["elim_list"] or match["ctf_list"] since that's tested by memberformattertests
