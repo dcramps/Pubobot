@@ -400,7 +400,7 @@ class Match:
         return team_str
 
     def _teams_picking_to_str(self):
-        match_id_str = "**Match {0}**".format(self.id)
+        match_id_str = f"**Match {self.id}**"
         alpha_str = self._team_to_str(self.alpha_team)
         beta_str = self._team_to_str(self.beta_team)
         
