@@ -339,7 +339,7 @@ class Match:
                     filter(lambda x: x.id not in self.players_ready, self.players)
                 )
                 not_ready_str = memberformatter.format_list(not_ready_list, True)
-                was_were = "were" if len(not_ready_list) else "was"
+                was_were = "were" if len(not_ready_list) > 1 else "was"
 
                 client.notice(
                     self.channel,
