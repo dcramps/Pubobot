@@ -1274,16 +1274,18 @@ class Channel:
         else:
             l = self.lastgame_cache
         if l:
-            n = l[0]
+            pickup_num = l[0]
             ago = datetime.timedelta(seconds=int(time.time() - int(l[1])))
-            gt = l[2]
+            gametype = l[2]
+
+            ## Can't use memberformatter here. players, alpha_players, beta_players are strings rather than arrays
             if l[4] and l[5]:
-                players = "[{0}] vs [{1}]".format(l[4], l[5])
+                players = "{0}\n{1}".format(l[4], l[5])
             else:
-                players = ", ".join(l[3].strip().split(" "))
+                players = l[3]
             client.notice(
                 self.channel,
-                "Pickup #{0}, {1} ago [{2}]: {3}".format(n, ago, gt, players),
+                f"**Match {match_id} [{gametype}]:** {ago} ago\n{players}"
             )
         else:
             client.notice(self.channel, "No pickups found.")

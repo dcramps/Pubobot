@@ -2,18 +2,17 @@ import discord
 from typing import List, OrderedDict, Dict, Tuple
 
 
-## No decorations
+## No tags
 def format_list(players: List[discord.Member], mention=False) -> str:
     return format_list_tuples([(player, None) for player in players], mention)
 
 
-## Yes decorations
+## Yes tags
 def format_list_tuples(
     players: List[Tuple[discord.Member, List[str]]], mention=False
 ) -> str:
     escaped_names = [get_player_string(player, mention) for player in players]
     return ", ".join(escaped_names)
-
 
 def format_unpicked(unpicked: OrderedDict):
     return ", ".join(
@@ -29,9 +28,9 @@ def format_unpicked(unpicked: OrderedDict):
 
 def get_player_string(player: Tuple[discord.Member, List[str]], mention) -> str:
     mention_or_name = f"<@{player[0].id}>" if mention else get_player_name(player[0])
-    decorations = get_decorations(player[1])
-    if decorations is not None:
-        return f"{mention_or_name} {decorations}"
+    tags = get_tags(player[1])
+    if tags is not None:
+        return f"{mention_or_name} {tags}"
     else:
         return f"{mention_or_name}"
 
@@ -40,7 +39,7 @@ def get_player_name(player: discord.Member) -> str:
     return (player.nick if player.nick else player.name).replace("`", r"\`")
 
 
-def get_decorations(decorations: List[str]):
-    if decorations is None or not len(decorations):
+def get_tags(tags: List[str]):
+    if tags is None or not len(tags):
         return None
-    return f"[{', '.join(decorations)}]"
+    return f"[{', '.join(tags)}]"

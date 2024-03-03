@@ -78,7 +78,6 @@ def test_format_list_mentions(members_with_normal_nicknames):
     )
     assert expected == actual
 
-
 def test_format_unpicked_pool(mocked_members):
     unpicked_pool = pubobot.bot.UnpickedPool(mocked_members).all.items()
     unpicked_pool_data = OrderedDict()
