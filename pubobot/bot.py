@@ -358,36 +358,11 @@ class Match:
             self.cancel_match()
 
     def _teams_to_str(self):
-        if self.ranked:
-            alpha_str = " ".join(
-                [
-                    "`{0}`<@{1}>".format(utils.rating_to_icon(self.ranks[i.id]), i.id)
-                    for i in self.alpha_team
-                ]
-            )
-            beta_str = " ".join(
-                [
-                    "`{0}`<@{1}>".format(utils.rating_to_icon(self.ranks[i.id]), i.id)
-                    for i in self.beta_team
-                ]
-            )
-            team_ratings = [
-                "〈__{0}__〉".format(sum([self.ranks[i.id] for i in team]) // len(team))
-                for team in (self.alpha_team, self.beta_team)
-            ]
-        else:
-            alpha_str = " ".join(["<@{0}>".format(i.id) for i in self.alpha_team])
-            beta_str = " ".join(["<@{0}>".format(i.id) for i in self.beta_team])
-            team_ratings = ["", ""]
+        alpha_str = self._team_to_str(self.alpha_team, True)
+        beta_str = self._team_to_str(self.beta_team, True)
+        return f"{alpha_str}{separator}{beta_str}"
 
-        if len(self.players) == 2:
-            return "{0} / {1}".format(alpha_str, beta_str)
-        else:
-            return "{0} ❲{1}❳ {4}\n{2} ❲{3}❳ {5}".format(
-                self.alpha_icon, alpha_str, self.beta_icon, beta_str, *team_ratings
-            )
-
-    def _team_to_str(self, team):
+    def _team_to_str(self, team, mention=False):
         if len(team):
             if self.ranked:
                 team_elo_average = sum(
@@ -402,9 +377,9 @@ class Match:
                         team,
                     )
                 )
-                team_str = f"{memberformatter.format_list_tuples(team_player_data, False)} [ELO: {team_elo_average}]"
+                team_str = f"{memberformatter.format_list_tuples(team_player_data, mention)} [ELO: {team_elo_average}]"
             else:
-                team_str = f"{memberformatter.format_list(team, False)}"
+                team_str = f"{memberformatter.format_list(team, mention)}"
         else:
             team_str = "❲{0}❳".format(self.team_names[0])
 
@@ -437,14 +412,7 @@ class Match:
         return ipstr
 
     def _players_to_str(self, players):
-        if len(players) == 1:
-            return "<@{0}>".format(players[0].id)
-
-        players = list(players)
-        last_player = players.pop(len(players) - 1)
-        players_highlight = "<@" + ">, <@".join([str(i.id) for i in players]) + ">"
-        players_highlight += " and <@{0}>".format(last_player.id)
-        return players_highlight
+        return memberformatter.format_list(players, True)
 
     def print_startmsg_instant(self):
         startmsg = f"**The {self.pickup.name} pickup has started**"
