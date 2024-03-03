@@ -358,9 +358,9 @@ class Match:
             self.cancel_match()
 
     def _teams_to_str(self):
-        alpha_str = self._team_to_str(self.alpha_team, True)
-        beta_str = self._team_to_str(self.beta_team, True)
-        return f"{alpha_str}{separator}{beta_str}"
+        alpha_str = f"{self.alpha_icon} {self._team_to_str(self.alpha_team, True)}"
+        beta_str = f"{self.beta_icon} {self._team_to_str(self.beta_team, True)}"
+        return f"{alpha_str}\n{beta_str}"
 
     def _team_to_str(self, team, mention=False):
         if len(team):
@@ -426,8 +426,6 @@ class Match:
             startmsg += "\r\n" + self._players_to_str(self.players) + " "
             if len(self.players) > 4:
                 startmsg += "\r\n"
-
-        #        startmsg += self._startmsg_to_str()
 
         if self.captains and len(self.players) > 2:
             startmsg += "\r\nSuggested captains: <@{0}> and <@{1}>.".format(
