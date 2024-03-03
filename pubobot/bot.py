@@ -335,18 +335,19 @@ class Match:
         alive_time = frametime - self.start_time
         if self.state == "waiting_ready":
             if alive_time > self.require_ready:
-                not_ready: List[discord.Member] = list(
+                not_ready_list = list(
                     filter(lambda x: x.id not in self.players_ready, self.players)
                 )
-                self.players: List[discord.Member] = list(
-                    filter(lambda x: x.id in self.players_ready, self.players)
-                )
-                not_ready = ["<@{0}>".format(i.id) for i in not_ready]
+                not_ready_str = memberformatter.format_list(not_ready_list, True)
+                was_were = "were" if len(not_ready_list) else "was"
+
                 client.notice(
                     self.channel,
-                    "{0} was not ready in time!\r\nReverting **{1}** pickup to gathering state...".format(
-                        ", ".join(not_ready), self.pickup.name
-                    ),
+                    f"{not_ready_str} {was_were} not ready in time!\r\nReverting **{game}** pickup to gathering state..."
+                )
+                
+                self.players: List[discord.Member] = list(
+                    filter(lambda x: x.id in self.players_ready, self.players)
                 )
                 self.ready_fallback()
         elif alive_time > (
