@@ -21,7 +21,17 @@ ExprTestCase = Tuple[str, Dict[str, str]]
                     dict(name="capture the flag", current="3", total="10"),
                 ),
             ],
-        )
+        ),
+        (
+            "__Unpicked__:\n{unpicked:((, )?\\d+\\. \\S+)+\\b}",
+            "__Unpicked__:\\\n(?P<unpicked>((, )?\\d+\\. \\S+)+\\b)",
+            [
+                (
+                    "__Unpicked__:\n1. first, 2. second, 3. third",
+                    dict(unpicked="1. first, 2. second, 3. third"),
+                ),
+            ],
+        ),
     ],
 )
 def test_compile_simple_expression(
