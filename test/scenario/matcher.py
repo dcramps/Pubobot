@@ -104,8 +104,8 @@ class PickStageReadyMatch(Match):
 
 class PickStageMatcher:
     _start_header = compile_simple_expression(
-        "__*({match_id})* **{game}** pickup has been started!__\r\n"
-        "<@{alpha_capt_id}> and <@{beta_capt_id}> please start picking teams.\r\n\r\n"
+        "**The {game} pickup has started**\r\n"
+        "<@{alpha_capt_id}> and <@{beta_capt_id}> please start picking teams\r\n\r\n"
     )
 
     _body = compile_simple_expression(

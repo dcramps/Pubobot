@@ -447,12 +447,7 @@ class Match:
         return players_highlight
 
     def print_startmsg_instant(self):
-        if self.ranked:
-            startmsg = "__*({0})* **{1}** pickup has been started!__ ".format(
-                str(self.id), self.pickup.name
-            )
-        else:
-            startmsg = "__**{0}** pickup has been started!__ ".format(self.pickup.name)
+        startmsg = f"**The {self.pickup.name} pickup has started**"
 
         if self.beta_team and self.alpha_team:
             if len(self.players) > 2:
@@ -477,11 +472,9 @@ class Match:
         client.notice(self.channel, self._startmsg_to_str())
 
     def print_startmsg_teams_picking_start(self):
-        startmsg = "__*({0})* **{1}** pickup has been started!__\r\n".format(
-            str(self.id), self.pickup.name
-        )
+        startmsg = f"**The {self.pickup.name} pickup has started**\r\n"
         if self.captains:
-            startmsg += "<@{0}> and <@{1}> please start picking teams.\r\n\r\n".format(
+            startmsg += "<@{0}> and <@{1}> please start picking teams\r\n\r\n".format(
                 self.captains[0].id, self.captains[1].id
             )
         else:
