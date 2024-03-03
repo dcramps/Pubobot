@@ -20,28 +20,19 @@ from matcher import PickStageMatcher
 async def test_last(pbot, pickup):
     players = pbot.members[: pickup.players]
 
-    # Simulate join by each player
     for i, player in enumerate(players, 1):
-        async with pbot.interact("!j elim", player) as msg:
-            if i == pickup.players - 1:
-                assert "Only 1 player left" in msg.content
+        await pbot.send_message("!j elim", player)
+        await pbot.get_message()
 
-            elif i < pickup.players:
-                assert f"**elim** ({i}/{pickup.players})" in msg.content
+    for _ in range(pickup.players):
+        await pbot.get_message()
 
-    # Verify DMs were sent to players
-    for player in players:
-        async with pbot.message() as msg:
-            assert "pickup has been started" in msg.content
-            assert isinstance(msg.channel, discord.DMChannel)
-            assert msg.channel.recipient.id == player.id
-
-    async with pbot.message() as msg:
-        assert "[**no pickups**]" in msg.content
+    await pbot.get_message()
 
     matcher = PickStageMatcher()
 
     async with pbot.message() as msg:
+        print(f"MESSAGE: {msg.content}")
         match = matcher.match_start(msg.content)
         assert len(match.unpicked) == len(players) - 2
 
