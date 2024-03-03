@@ -343,9 +343,9 @@ class Match:
 
                 client.notice(
                     self.channel,
-                    f"{not_ready_str} {was_were} not ready in time!\r\nReverting **{game}** pickup to gathering state..."
+                    f"{not_ready_str} {was_were} not ready in time!\r\nReverting **{game}** pickup to gathering state...",
                 )
-                
+
                 self.players: List[discord.Member] = list(
                     filter(lambda x: x.id in self.players_ready, self.players)
                 )
