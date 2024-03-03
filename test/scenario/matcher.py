@@ -124,8 +124,8 @@ class PickStageMatcher:
 
     _ready = compile_simple_expression(
         "**TEAMS READY - Match {match_id}**\r\n\r\n"
-        ":{alpha_emote}: {alpha_team} \n"
-        ":{beta_emote}: {beta_team} \r\n\r\n"
+        ":{alpha_emote}: {alpha_team}\n"
+        ":{beta_emote}: {beta_team}\r\n\r\n"
     )
 
     _ready_member = compile_simple_expression("<@{id}>")

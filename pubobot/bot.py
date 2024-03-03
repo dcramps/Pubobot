@@ -402,7 +402,7 @@ class Match:
     def _teams_picking_to_str(self):
         match_id_str = "**Match {0}**".format(self.id)
         alpha_str = self._team_to_str(self.alpha_team)
-        beta_str = self._team_to_str(self.alpha_team)
+        beta_str = self._team_to_str(self.beta_team)
         
         # TODO: for tags (`.nomic`, `.tag im retarded`, etc) this will have to change
         # for now though, assume tags is always the ELO rank thingy
