@@ -18,7 +18,7 @@ def format_list_tuples(
 def format_unpicked(unpicked: OrderedDict):
     return ", ".join(
         [
-            f"{k}. {get_player_string((v['player'], v['tags']), False)}"
+            f"{k}. {get_player_string((v['player'], v.get('tags', [])), False)}"
             for k, v in unpicked.items()
         ]
     )

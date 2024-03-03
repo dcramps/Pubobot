@@ -2,9 +2,9 @@ import discord
 import pytest
 import pubobot.memberformatter
 
-# import pubobot.bot
-from typing import List, Tuple
+from typing import List, Tuple, OrderedDict
 from unittest.mock import MagicMock
+from pubobot import memberformatter, bot
 
 ## Fixtures
 
@@ -15,8 +15,8 @@ def mocked_members() -> List[discord.Member]:
     for i in range(4):
         member = MagicMock(spec=discord.Member)
         member.id = i
-        member.name = f"dc{i}k"
-        member.nick = f"dc{i}"
+        member.name = f"Member_name_{i}"
+        member.nick = f"Member_nick_{i}"
         member.mention = f"<@{i}>"
         members.append(member)
     return members
@@ -58,7 +58,7 @@ def members_with_decorations(mocked_members) -> List[Tuple[discord.Member, List[
 
 
 def test_format_list_uses_nicknames(members_with_decorations):
-    expected = "dc0 [[A+], :nomic:], dc1 [[A+], :nomic:], dc2 [[A+], :nomic:], dc3 [[A+], :nomic:]"
+    expected = "Member_nick_0 [[A+], :nomic:], Member_nick_1 [[A+], :nomic:], Member_nick_2 [[A+], :nomic:], Member_nick_3 [[A+], :nomic:]"
     actual = pubobot.memberformatter.format_list_tuples(members_with_decorations, False)
     assert expected == actual
 
@@ -79,7 +79,12 @@ def test_format_list_mentions(members_with_normal_nicknames):
     assert expected == actual
 
 
-# def test_format_unpicked_pool(members_with_normal_nicknames):
-#     import pubobot.bot
-#     unpicked = pubobot.bot.UnpickedPool(members_with_normal_nicknames).all
-#     assert(pubobot.memberformatter.format_unpicked("Unpicked:", unpicked) == "Unpicked: 1. dc, 2. dc, 3. dc, 4. dc")
+def test_format_unpicked_pool(mocked_members):
+    unpicked_pool = pubobot.bot.UnpickedPool(mocked_members).all.items()
+    unpicked_pool_data = OrderedDict()
+    
+    for position, player in unpicked_pool:
+        player.nick = f"{position}" 
+        unpicked_pool_data[position] = {"player": player}
+
+    assert pubobot.memberformatter.format_unpicked(unpicked_pool_data) == "1. 1, 2. 2, 3. 3, 4. 4"
