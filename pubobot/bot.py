@@ -708,7 +708,7 @@ class Match:
                 self.id, self.pickup.name
             )
             content += "Waiting on: {0}.\r\n".format(
-                memberformatter.format_list(not_ready, False)
+                memberformatter.format_list(not_ready, True)
             )
             content += "Please react with :ballot_box_with_check: to **check-in** or :no_entry: to **abort**!"
             client.edit_message(self.ready_message, content)
@@ -1301,27 +1301,21 @@ class Channel:
             client.reply(self.channel, member, "You have no right for this!")
 
     def who(self, member, args):
-        templist = []
+        who_output = []
         for pickup in (
             pickup
             for pickup in self.pickups
             if pickup.players != [] and (pickup.name.lower() in args or args == [])
         ):
-            templist.append(
-                "[**{0}** ({1}/{2})] {3}".format(
+            pickup_details = "[**{0}** ({1}/{2})]".format(
                     pickup.name,
                     len(pickup.players),
                     pickup.cfg["maxplayers"],
-                    "/".join(
-                        [
-                            "`" + (i.nick or i.name).replace("`", "") + "`"
-                            for i in pickup.players
-                        ]
-                    ),
                 )
-            )
-        if templist != []:
-            client.notice(self.channel, " ".join(templist))
+            pickup_players = memberformatter.format_list(pickup.players, False)
+            who_output.append(f"{pickup_details} {pickup_players}")
+        if who_output != []:
+            client.notice(self.channel, "\n".join(who_output))
         else:
             if args:
                 client.notice(
