@@ -9,6 +9,7 @@ pytestmark = [
     pytest.mark.scenario(guild="Example", channel="General", members=10),
 ]
 
+
 async def test_who(pbot, pickup_factory):
     elim_config = {
         "pick_captains": "2",
@@ -41,13 +42,16 @@ async def test_who(pbot, pickup_factory):
 
     # Output format should be sane
     async with pbot.message() as msg:
-        assert (match := simple_match("[**{game}** ({current}/{total})] {list}", msg.content))
+        assert (
+            match := simple_match(
+                "[**{game}** ({current}/{total})] {list}", msg.content
+            )
+        )
         assert match["game"] == "elim"
         assert match["current"] == "7"
         assert match["total"] == "8"
         # Don't really care to match["list"] since that's tested by memberformattertests
 
-    
     for player in ctf_players[:-1]:
         await pbot.send_message("!j ctf", player)
         await pbot.get_message()
@@ -57,4 +61,4 @@ async def test_who(pbot, pickup_factory):
 
     # Use newlines for  readability
     async with pbot.message() as msg:
-        assert '\n' in msg.content
+        assert "\n" in msg.content

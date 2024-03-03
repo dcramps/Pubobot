@@ -62,6 +62,7 @@ def init():
     allowoffline = []
     waiting_reactions = {}
 
+
 class UnpickedPool:
     def __init__(self, players):
         self.position_to_players = OrderedDict()
@@ -389,8 +390,18 @@ class Match:
     def _team_to_str(self, team):
         if len(team):
             if self.ranked:
-                team_elo_average = sum([self.ranks[player.id] for player in team]) // len(team)
-                team_player_data = list(map(lambda player: (player, [utils.rating_to_icon(self.ranks[player.id])]), team))
+                team_elo_average = sum(
+                    [self.ranks[player.id] for player in team]
+                ) // len(team)
+                team_player_data = list(
+                    map(
+                        lambda player: (
+                            player,
+                            [utils.rating_to_icon(self.ranks[player.id])],
+                        ),
+                        team,
+                    )
+                )
                 team_str = f"{memberformatter.format_list_tuples(team_player_data, False)} [ELO: {team_elo_average}]"
             else:
                 team_str = f"{memberformatter.format_list(team, False)}"
@@ -403,14 +414,16 @@ class Match:
         match_id_str = f"**Match {self.id}**"
         alpha_str = self._team_to_str(self.alpha_team)
         beta_str = self._team_to_str(self.beta_team)
-        
+
         # TODO: for tags (`.nomic`, `.tag im retarded`, etc) this will have to change
         # for now though, assume tags is always the ELO rank thingy
         unpicked_player_data = OrderedDict()
         for key, player in self.unpicked_pool.all.items():
             inner = {
                 "player": player,
-                "tags": [utils.rating_to_icon(self.ranks[player.id])] if self.ranked else []
+                "tags": [utils.rating_to_icon(self.ranks[player.id])]
+                if self.ranked
+                else [],
             }
             unpicked_player_data[key] = inner
         unpicked_str = memberformatter.format_unpicked(unpicked_player_data)
@@ -1256,10 +1269,10 @@ class Channel:
             if pickup.players != [] and (pickup.name.lower() in args or args == [])
         ):
             pickup_details = "[**{0}** ({1}/{2})]".format(
-                    pickup.name,
-                    len(pickup.players),
-                    pickup.cfg["maxplayers"],
-                )
+                pickup.name,
+                len(pickup.players),
+                pickup.cfg["maxplayers"],
+            )
             pickup_players = memberformatter.format_list(pickup.players, False)
             who_output.append(f"{pickup_details} {pickup_players}")
         if who_output != []:

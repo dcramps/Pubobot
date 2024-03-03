@@ -38,6 +38,7 @@ not_ready_message_pattern = compile_simple_expression(
 emoji_ready = "\u2611"
 emoji_abort = "\u26d4"
 
+
 async def test_require_ready_all_ready(pbot, pickup):
     players = pbot.members[: pickup.players]
 

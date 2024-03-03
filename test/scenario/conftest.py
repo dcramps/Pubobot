@@ -304,6 +304,7 @@ async def pickup(request, pbot):
 
     return Pickup(name, players, config)
 
+
 class PickupFactory:
     def __init__(self, pbot):
         self.pbot = pbot
@@ -311,17 +312,21 @@ class PickupFactory:
     async def create(self, name: str, players: int, config: Dict[str, str]):
         async with self.pbot.interact("!enable_pickups", self.pbot.admin):
             pass
-            
-        async with self.pbot.interact(f"!add_pickups {name}:{players}", self.pbot.admin):
+
+        async with self.pbot.interact(
+            f"!add_pickups {name}:{players}", self.pbot.admin
+        ):
             pass
 
         for k, v in config.items():
-            async with self.pbot.interact(f"!set_pickups {name} {k} {v}", self.pbot.admin):
+            async with self.pbot.interact(
+                f"!set_pickups {name} {k} {v}", self.pbot.admin
+            ):
                 pass
-    
+
         return Pickup(name, players, config)
+
 
 @pytest_asyncio.fixture
 async def pickup_factory(pbot):
     return PickupFactory(pbot)
-    
