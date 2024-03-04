@@ -4,6 +4,7 @@ import time
 import asyncio
 import argparse
 import os
+import signal
 
 # my modules
 from . import console, config, bot, client, scheduler, stats3
@@ -28,7 +29,12 @@ def main():
     config.init(args.config)
     client.init()
 
-    client.c.loop.create_task(bot_run())
+    loop = client.c.loop
+    loop.create_task(bot_run())
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(sig, cleanly_exit, sig)
+
     client.run()  # runs until ctrl+c
 
 
@@ -45,6 +51,11 @@ async def bot_run():  # background thinking
             await client.close()
             print("QUIT NOW.")
             os._exit(0)
+
+
+def cleanly_exit(sig):
+    print(f"Received signal {sig}, exiting.")
+    console.terminate()
 
 
 if __name__ == "__main__":
