@@ -40,6 +40,21 @@ def init(config_file="config.cfg"):
         if hasattr(cfg, k):
             setattr(cfg, k, v)
 
+    # Override config with environment variables
+    env_vars = [
+        ("PUBOBOT_DISCORD_TOKEN", str, "DISCORD_TOKEN"),
+        ("PUBOBOT_BACKUP_TIME", int, "BACKUP_TIME"),
+        ("PUBOBOT_KEEP_BACKUPS", int, "KEEP_BACKUPS"),
+        ("PUBOBOT_COMMANDS_LINK", str, "COMMANDS_LINK"),
+        ("PUBOBOT_HELPINFO", str, "HELPINFO"),
+        ("PUBOBOT_FIRST_INIT_MESSAGE", str, "FIRST_INIT_MESSAGE"),
+    ]
+
+    for var, attr_type, attr in env_vars:
+        value = os.environ.get(var, None)
+        if value is not None:
+            setattr(cfg, attr, attr_type(value))
+
     # check if we need to update from previous stats system
     if os.path.isdir("channels"):
         console.display(
