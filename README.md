@@ -20,6 +20,12 @@ $ poetry run pubobot
 
 ## Deploying
 
+### Build
+
+```console
+$ docker build -t pubobot .
+```
+
 ### Docker
 
 For persistence, mount volumes `/pubobot/data` and `/pubobot/logs`.
