@@ -5,6 +5,7 @@ import asyncio
 import argparse
 import os
 import signal
+import sys
 
 # my modules
 from . import console, config, bot, client, scheduler, stats3
@@ -22,7 +23,10 @@ def main():
 
     args = parser.parse_args()
 
-    console.init(args.logs)
+    # Only enable input if running under a TTY
+    enable_input = os.isatty(sys.stdin.fileno())
+
+    console.init(args.logs, enable_input)
     scheduler.init()
     bot.init()
     stats3.init(args.db)

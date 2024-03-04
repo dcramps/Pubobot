@@ -192,7 +192,10 @@ def display(data):
     text = datetime.datetime.now().strftime("(%H:%M:%S)") + text  # add date and time
     linebuffer = readline.get_line_buffer()
     sys.stdout.write("\r\n\033[F\033[K" + text + "\r\n>" + linebuffer)
-    log.write(text + "\r\n")
+    sys.stdout.flush()
+
+    if log:
+        log.write(text + "\r\n")
 
 
 # delete all channels with no activity within a month
