@@ -65,17 +65,13 @@ def test_format_list_uses_nicknames(members_with_decorations):
 
 def test_format_list_escapes_backticks(members_with_dumb_nicknames):
     expected = "d\\`c0, d\\`c1, d\\`c2, d\\`c3"
-    actual = memberformatter.format_list_tuples(
-        members_with_dumb_nicknames, False
-    )
+    actual = memberformatter.format_list_tuples(members_with_dumb_nicknames, False)
     assert expected == actual
 
 
 def test_format_list_mentions(members_with_normal_nicknames):
     expected = "<@0>, <@1>, <@2>, <@3>"
-    actual = memberformatter.format_list_tuples(
-        members_with_normal_nicknames, True
-    )
+    actual = memberformatter.format_list_tuples(members_with_normal_nicknames, True)
     assert expected == actual
 
 
@@ -88,6 +84,5 @@ def test_format_unpicked_pool(mocked_members):
         unpicked_pool_data[position] = {"player": player}
 
     assert (
-        memberformatter.format_unpicked(unpicked_pool_data)
-        == "1. 1, 2. 2, 3. 3, 4. 4"
+        memberformatter.format_unpicked(unpicked_pool_data) == "1. 1, 2. 2, 3. 3, 4. 4"
     )
