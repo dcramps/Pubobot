@@ -109,6 +109,20 @@ async def test_last(pbot, pickup):
     assert match["alpha_team"] == " ".join(p.nick for p in alpha_team_2)
     assert match["beta_team"] == " ".join(p.nick for p in beta_team_2)
 
+    # last by player name
+    await pbot.send_message("!last ExampleUser2_2_nick", pbot.admin)
+    msg = await pbot.get_message()
+    match = simple_match(
+        "**Match {n} [{game}]:** {time} ago\n{alpha_team}\n{beta_team}{_:$}",
+        msg.content,
+    )
+    assert match
+    assert match["n"] == "1"
+    assert match["game"] == "elim"
+    assert match["time"]  # Just check if it's non-empty
+    assert match["alpha_team"] == " ".join(p.nick for p in alpha_team_2)
+    assert match["beta_team"] == " ".join(p.nick for p in beta_team_2)
+
     # lasttt should give no data since there have only been two pugs
     await pbot.send_message("!lasttt", pbot.admin)
     msg = await pbot.get_message()
