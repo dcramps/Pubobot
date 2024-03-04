@@ -63,7 +63,7 @@ async def simulate_pug(pbot, pickup):
 async def test_last(pbot, pickup):
     (alpha_team_1, beta_team_1) = await simulate_pug(pbot, pickup)
 
-    await pbot.send_message("!last", pbot.admin)
+    await pbot.send_message("!last elim", pbot.admin)
     await pbot.get_message()
     msg = await pbot.get_message()
     match = simple_match(
@@ -79,7 +79,7 @@ async def test_last(pbot, pickup):
 
     (alpha_team_2, beta_team_2) = await simulate_pug(pbot, pickup)
 
-    await pbot.send_message("!lastt", pbot.admin)
+    await pbot.send_message("!lastt elim", pbot.admin)
     await pbot.get_message()
     msg = await pbot.get_message()
     match = simple_match(
