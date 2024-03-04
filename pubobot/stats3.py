@@ -343,26 +343,30 @@ def register_pickup(match):
     return new_ranks
 
 
-def lastgame(channel_id, text=False):  # [id, gametype, ago, [players], [caps]]
-    if not text:  # return lastest game
-        c.execute(
-            "SELECT pickup_id, at, pickup_name, players, alpha_players, beta_players, winner_team FROM pickups WHERE channel_id = ? ORDER BY pickup_id DESC LIMIT 1",
-            (channel_id,),
+def lastgame(
+    channel_id, pickup_name=False, offset=0
+):  # [id, gametype, ago, [players], [caps]]
+    select_statement = "SELECT pickup_id, at, pickup_name, players, alpha_players, beta_players, winner_team FROM pickups WHERE channel_id = {0}".format(
+        channel_id
+    )
+    if not pickup_name:  # return without considering a gametype
+        query = "{0} ORDER BY pickup_id DESC LIMIT 1 OFFSET {1}".format(
+            select_statement, offset
         )
+        c.execute(query)
         result = c.fetchone()
     else:
-        # try to find last game by gametype
-        c.execute(
-            "SELECT pickup_id, at, pickup_name, players, alpha_players, beta_players, winner_team FROM pickups WHERE channel_id = ? and pickup_name = ? ORDER BY pickup_id DESC LIMIT 1 COLLATE NOCASE",
-            (channel_id, text),
+        # try to find gametype
+        query = "{0} and pickup_name = {1} ORDER BY pickup_id DESC LIMIT 1 OFFSET {2} COLLATE NOCASE".format(
+            select_statement, text, offset
         )
+        c.execute(query)
         result = c.fetchone()
         if result == None:  # no results, try to find last game by player
-            c.execute(
-                "SELECT pickup_id, at, pickup_name, players, alpha_players, beta_players, winner_team FROM pickups WHERE channel_id = '{0}' and players LIKE '% {1} %' ORDER BY pickup_id DESC LIMIT 1".format(
-                    channel_id, text
-                )
+            query = "{0} and players LIKE '% {1} %' ORDER BY pickup_id DESC LIMIT 1 OFFSET {2}".format(
+                select_statement, text, offset
             )
+            c.execute(query)
             result = c.fetchone()
     return result
 

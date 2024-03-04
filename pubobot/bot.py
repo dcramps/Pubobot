@@ -839,6 +839,8 @@ class Channel:
                     msg.guild, msg.channel, msg.author.display_name, msg.content
                 )
             )
+
+            last_match = re.match(r"last(t*)", lower[0])
             if lower[0] in ["add", "j"]:
                 self.add_player(member, lower[1:msglen])
 
@@ -878,11 +880,11 @@ class Channel:
             elif lower[0] == "unsubscribe":
                 await self.subscribe(member, lower[1:msglen], True)
 
-            elif lower[0] == "lastgame":
-                self.lastgame(member, msgtup[1:msglen])
-
-            elif lower[0] == "last":
-                self.lastgame(member, msgtup[1:msglen])
+            elif last_match:
+                t_count = len(last_match.group(1))
+                # dont let mouthbreathers do lasttttttttttttttttttttttttttttttttttttt
+                if t_count <= 5:
+                    self.lastgame(member, msgtup[1:msglen], t_count)
 
             elif lower[0] == "liast":
                 self.who(member, lower[1:msglen])
@@ -1270,13 +1272,16 @@ class Channel:
         else:
             client.reply(self.channel, member, "You have no right for this!")
 
-    def lastgame(self, member, args):
-        if args != []:
-            l = stats3.lastgame(
-                self.id, args[0]
-            )  # id, ago, gametype, players, alpha_players, beta_players
-        else:
+    def lastgame(self, member, args, index):
+        # `.last` -- use cache
+        if args == [] and index == 0:
             l = self.lastgame_cache
+        # `.last[tttt] [gametype]` -- use db
+        else:
+            l = stats3.lastgame(
+                self.id, args[0] if args else None, index
+            )  # id, ago, gametype, players, alpha_players, beta_players
+
         if l:
             pickup_num = l[0]
             ago = datetime.timedelta(seconds=int(time.time() - int(l[1])))
