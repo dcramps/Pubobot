@@ -5,10 +5,13 @@ import time
 import datetime
 import re
 import random
-import discord
+from collections import OrderedDict
 from itertools import combinations
+from typing import List
+
+from discord import errors, Member
+
 from . import client, config, console, memberformatter, stats3, scheduler, utils
-from typing import List, OrderedDict
 
 max_expire_time = 6 * 60 * 60  # 6 hours
 max_bantime = 30 * 24 * 60 * 60 * 12 * 3  # 30 days * 12 * 3
@@ -143,7 +146,7 @@ class UnpickedPool:
 
 
 class Match:
-    def __init__(self, pickup, players: List[discord.Member]):
+    def __init__(self, pickup, players: List[Member]):
         global matches_step
         # set match id
         stats3.last_match += 1
@@ -1285,7 +1288,8 @@ class Channel:
             else:
                 players = l[3]
             client.notice(
-                self.channel, f"**Match {match_id} [{gametype}]:** {ago} ago\n{players}"
+                self.channel,
+                f"**Match {pickup_num} [{gametype}]:** {ago} ago\n{players}",
             )
         else:
             client.notice(self.channel, "No pickups found.")

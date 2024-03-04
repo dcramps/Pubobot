@@ -1,9 +1,9 @@
 import pytest
+from collections import deque
 
 import discord
 
-from collections import deque
-from matcher import PickStageMatcher
+from matcher import PickStageMatcher, simple_match
 
 
 @pytest.mark.asyncio
@@ -51,8 +51,21 @@ async def test_last(pbot, pickup):
     await pbot.send_message("!p 1", alpha_capt)
     await pbot.get_message()
 
+    # Assign players to teams
+    _, first_pick = unpicked.popleft()
+    alpha_team.append(first_pick)
+    _, last_pick = unpicked.popleft()
+    beta_team.append(last_pick)
     await pbot.send_message("!last", pbot.admin)
     await pbot.get_message()
-
-    # TODO: Figure out a regex to match the last format
-    # Match {n} [{game}]: {time} ago\n{alpha_team}\n{beta_team}
+    msg = await pbot.get_message()
+    match = simple_match(
+        "**Match {n} [{game}]:** {time} ago\n{alpha_team}\n{beta_team}{_:$}",
+        msg.content,
+    )
+    assert match
+    assert match["n"] == "0"
+    assert match["game"] == "elim"
+    assert match["time"]  # Just check if it's non-empty
+    assert match["alpha_team"] == " ".join(p.nick for p in alpha_team)
+    assert match["beta_team"] == " ".join(p.nick for p in beta_team)

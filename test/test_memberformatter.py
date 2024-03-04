@@ -1,9 +1,9 @@
 import discord
 import pytest
-import pubobot.memberformatter
 
 from typing import List, Tuple, OrderedDict
 from unittest.mock import MagicMock
+
 from pubobot import memberformatter, bot
 
 ## Fixtures
