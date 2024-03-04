@@ -344,12 +344,12 @@ def register_pickup(match):
 
 
 def lastgame(
-    channel_id, pickup_name=False, offset=0
+    channel_id, text=False, offset=0
 ):  # [id, gametype, ago, [players], [caps]]
     select_statement = "SELECT pickup_id, at, pickup_name, players, alpha_players, beta_players, winner_team FROM pickups WHERE channel_id = {0}".format(
         channel_id
     )
-    if not pickup_name:  # return without considering a gametype
+    if not text:  # return without considering a gametype
         query = "{0} ORDER BY pickup_id DESC LIMIT 1 OFFSET {1}".format(
             select_statement, offset
         )
@@ -357,16 +357,16 @@ def lastgame(
         result = c.fetchone()
     else:
         # try to find gametype
-        query = "{0} and pickup_name = {1} ORDER BY pickup_id DESC LIMIT 1 OFFSET {2} COLLATE NOCASE".format(
-            select_statement, text, offset
+        query = "{0} and pickup_name = ? ORDER BY pickup_id DESC LIMIT 1 OFFSET {1} COLLATE NOCASE".format(
+            select_statement, offset
         )
-        c.execute(query)
+        c.execute(query, (text))
         result = c.fetchone()
         if result == None:  # no results, try to find last game by player
-            query = "{0} and players LIKE '% {1} %' ORDER BY pickup_id DESC LIMIT 1 OFFSET {2}".format(
-                select_statement, text, offset
+            query = "{0} and players LIKE '% ? %' ORDER BY pickup_id DESC LIMIT 1 OFFSET {1}".format(
+                select_statement, offset
             )
-            c.execute(query)
+            c.execute(query, (text))
             result = c.fetchone()
     return result
 
