@@ -215,8 +215,8 @@ class Match:
                     self.captains = random.sample(self.players, 2)
 
             elif pick_captains == 1 and self.captains_role:
-                self.captains: List[discord.Member] = []
-                candidates: List[discord.Member] = list(
+                self.captains: List[Member] = []
+                candidates: List[Member] = list(
                     filter(
                         lambda x: self.captains_role in [role.id for role in x.roles],
                         self.players,
@@ -265,8 +265,8 @@ class Match:
             elif self.pick_teams == "manual":
                 self.pick_step = 0
                 unpicked = list(players)
-                self.alpha_team: List[discord.Member] = []
-                self.beta_team: List[discord.Member] = []
+                self.alpha_team: List[Member] = []
+                self.beta_team: List[Member] = []
                 if self.captains:
                     self.alpha_team.append(self.captains[0])
                     self.beta_team.append(self.captains[1])
@@ -346,10 +346,10 @@ class Match:
 
                 client.notice(
                     self.channel,
-                    f"{not_ready_str} {was_were} not ready in time!\r\nReverting **{game}** pickup to gathering state...",
+                    f"{not_ready_str} {was_were} not ready in time!\r\nReverting **{self.pickup.name}** pickup to gathering state...",
                 )
 
-                self.players: List[discord.Member] = list(
+                self.players: List[Member] = list(
                     filter(lambda x: x.id in self.players_ready, self.players)
                 )
                 self.ready_fallback()
@@ -680,7 +680,7 @@ class ReadyMark:
 
 class Pickup:
     def __init__(self, channel, cfg):
-        self.players: List[discord.Member] = []
+        self.players: List[Member] = []
         self.users_last_ready = {}
         self.name = cfg["pickup_name"]
         self.lastmap = None
