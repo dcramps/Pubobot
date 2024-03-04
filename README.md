@@ -18,7 +18,9 @@ $ poetry install
 $ poetry run pubobot
 ```
 
-## Deploying Container
+## Deploying
+
+### Docker
 
 For persistence, mount volumes `/pubobot/data` and `/pubobot/logs`.
 
@@ -39,4 +41,18 @@ $ docker run -d \
     -v pubobot-data:/pubobot/data \
     -v pubobot-logs:/pubobot/logs \
     pubobot
+```
+
+### Docker Compose
+
+A `compose.yaml` file is provided for your convenience. You will need to create
+a `.env` file and set your discord token:
+
+**.env**
+```
+PUBOBOT_DISCORD_TOKEN=..bot token..
+```
+Bring up
+```console
+$ docker-compose up
 ```

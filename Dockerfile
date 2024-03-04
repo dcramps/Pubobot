@@ -6,8 +6,7 @@ RUN python -m pip install poetry && \
     poetry build && \
     mkdir /pubobot && \
     python -m venv /pubobot && \
-    /pubobot/bin/python -m pip install /build/dist/*.whl && \
-    mkdir /pubobot/{config,data,logs}
+    /pubobot/bin/python -m pip install /build/dist/*.whl
 
 FROM docker.io/python:3.12-alpine
 COPY --from=builder /pubobot /pubobot

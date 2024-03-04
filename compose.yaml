@@ -1,0 +1,12 @@
+---
+services:
+  pubobot:
+    image: pubobot
+    env_file: .env
+    volumes:
+      - data:/pubobot/data
+      - logs:/pubobot/logs
+
+volumes:
+  data:
+  logs:
