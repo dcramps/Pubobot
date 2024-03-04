@@ -840,7 +840,6 @@ class Channel:
                 )
             )
 
-            last_match = re.match(r"last(t*)", lower[0])
             if lower[0] in ["add", "j"]:
                 self.add_player(member, lower[1:msglen])
 
@@ -880,7 +879,7 @@ class Channel:
             elif lower[0] == "unsubscribe":
                 await self.subscribe(member, lower[1:msglen], True)
 
-            elif last_match:
+            elif last_match := re.match(r"last(t*)", lower[0]):
                 t_count = len(last_match.group(1))
                 # dont let mouthbreathers do lasttttttttttttttttttttttttttttttttttttt
                 if t_count <= 5:
