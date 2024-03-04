@@ -1,5 +1,7 @@
+from typing import List, Tuple
+from collections import OrderedDict
+
 import discord
-from typing import List, OrderedDict, Dict, Tuple
 
 
 ## No tags

@@ -59,13 +59,13 @@ def members_with_decorations(mocked_members) -> List[Tuple[discord.Member, List[
 
 def test_format_list_uses_nicknames(members_with_decorations):
     expected = "Member_nick_0 [[A+], :nomic:], Member_nick_1 [[A+], :nomic:], Member_nick_2 [[A+], :nomic:], Member_nick_3 [[A+], :nomic:]"
-    actual = pubobot.memberformatter.format_list_tuples(members_with_decorations, False)
+    actual = memberformatter.format_list_tuples(members_with_decorations, False)
     assert expected == actual
 
 
 def test_format_list_escapes_backticks(members_with_dumb_nicknames):
     expected = "d\\`c0, d\\`c1, d\\`c2, d\\`c3"
-    actual = pubobot.memberformatter.format_list_tuples(
+    actual = memberformatter.format_list_tuples(
         members_with_dumb_nicknames, False
     )
     assert expected == actual
@@ -73,14 +73,14 @@ def test_format_list_escapes_backticks(members_with_dumb_nicknames):
 
 def test_format_list_mentions(members_with_normal_nicknames):
     expected = "<@0>, <@1>, <@2>, <@3>"
-    actual = pubobot.memberformatter.format_list_tuples(
+    actual = memberformatter.format_list_tuples(
         members_with_normal_nicknames, True
     )
     assert expected == actual
 
 
 def test_format_unpicked_pool(mocked_members):
-    unpicked_pool = pubobot.bot.UnpickedPool(mocked_members).all.items()
+    unpicked_pool = bot.UnpickedPool(mocked_members).all.items()
     unpicked_pool_data = OrderedDict()
 
     for position, player in unpicked_pool:
@@ -88,6 +88,6 @@ def test_format_unpicked_pool(mocked_members):
         unpicked_pool_data[position] = {"player": player}
 
     assert (
-        pubobot.memberformatter.format_unpicked(unpicked_pool_data)
+        memberformatter.format_unpicked(unpicked_pool_data)
         == "1. 1, 2. 2, 3. 3, 4. 4"
     )
