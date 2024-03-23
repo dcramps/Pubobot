@@ -39,16 +39,19 @@ def get_player_string(player: Tuple[discord.Member, List[str]], mention) -> str:
 
 
 def get_player_name(player: discord.Member) -> str:
-    return (
-        (player.nick if player.nick else player.name)
-        .replace("`", r"\`")
-        .replace("_", r"\_")
-        .replace("*", r"\*")
-        .replace("#", r"\#")
-    )
+    return escaped_markdown((player.nick if player.nick else player.name))
 
 
 def get_tags(tags: List[str]):
     if tags is None or not len(tags):
         return None
     return f"[{', '.join(tags)}]"
+
+
+def escaped_markdown(input: str) -> str:
+    return (
+        input.replace("`", r"\`")
+        .replace("_", r"\_")
+        .replace("*", r"\*")
+        .replace("#", r"\#")
+    )
