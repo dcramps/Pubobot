@@ -37,9 +37,9 @@ def members_with_dumb_nicknames(
     mocked_members: List[discord.Member],
 ) -> List[Tuple[discord.Member, List[str]]]:
     dumb_nicknames = []
-    for index, member in enumerate(mocked_members):
-        member.nick = f"d`c{index}"
-        dumb_nicknames.append((member, None))
+    dumb_nickname = mocked_members[0]
+    dumb_nickname.nick = f"d`_#*`_#*c0"
+    dumb_nicknames.append((dumb_nickname, None))
     return dumb_nicknames
 
 
@@ -64,7 +64,7 @@ def test_format_list_uses_nicknames(members_with_decorations):
 
 
 def test_format_list_escapes_backticks(members_with_dumb_nicknames):
-    expected = "d\\`c0, d\\`c1, d\\`c2, d\\`c3"
+    expected = "d\\`\\_\\#\\*\\`\\_\\#\\*c0"
     actual = memberformatter.format_list_tuples(members_with_dumb_nicknames, False)
     assert expected == actual
 
