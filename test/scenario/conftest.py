@@ -104,7 +104,7 @@ class Context:
 
         assert client.user
         dpytest.back.make_member(
-            dpytest.back.get_state().user, guild, nick=client.user.name + f"_nick"
+            dpytest.back.get_state().user, guild, nick=client.user.name + f"-nick"
         )
 
         channel = dpytest.back.make_text_channel(channel_name, guild)
@@ -119,7 +119,7 @@ class Context:
         for i in range(member_count):
             user = dpytest.back.make_user(f"{guild_name}User{str(i)}", f"{i+1:04}")
             member = dpytest.back.make_member(
-                user, guild, nick=user.name + f"_{str(i)}_nick"
+                user, guild, nick=user.name + f"-{str(i)}-nick"
             )
             members.append(member)
 
