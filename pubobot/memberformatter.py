@@ -39,7 +39,13 @@ def get_player_string(player: Tuple[discord.Member, List[str]], mention) -> str:
 
 
 def get_player_name(player: discord.Member) -> str:
-    return (player.nick if player.nick else player.name).replace("`", r"\`")
+    return (
+        (player.nick if player.nick else player.name)
+        .replace("`", r"\`")
+        .replace("_", r"\_")
+        .replace("*", r"\*")
+        .replace("#", r"\#")
+    )
 
 
 def get_tags(tags: List[str]):

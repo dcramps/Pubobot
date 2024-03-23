@@ -1291,9 +1291,16 @@ class Channel:
                 players = "{0}\n{1}".format(l[4], l[5])
             else:
                 players = l[3]
+
+            escaped_players = (
+                players.replace("`", r"\`")
+                .replace("_", r"\_")
+                .replace("*", r"\*")
+                .replace("#", r"\#")
+            )
             client.notice(
                 self.channel,
-                f"**Match {pickup_num} [{gametype}]:** {ago} ago\n{players}",
+                f"**Match {pickup_num} [{gametype}]:** {ago} ago\n{escaped_players}",
             )
         else:
             client.notice(self.channel, "No pickups found.")
