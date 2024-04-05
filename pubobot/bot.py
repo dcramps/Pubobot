@@ -561,6 +561,12 @@ class Match:
         self.winner = "draw"
         self.next_state()
 
+    def set_ready_message(self, message):
+        self.ready_message = message
+        waiting_reactions[message.id] = self.process_ready_reaction
+        for emoji in [ready_emoji, "🔸", notready_emoji]:
+            client.add_reaction(message, emoji)
+
     def process_ready_reaction(self, action, reaction, user):
         if user not in self.players or self.state != "waiting_ready":
             return
@@ -633,12 +639,6 @@ class Match:
                 waiting_reactions.pop(self.ready_message.id)
                 client.delete_message(self.ready_message)
             self.next_state()
-
-    def set_ready_message(self, message):
-        self.ready_message = message
-        waiting_reactions[message.id] = self.process_ready_reaction
-        for emoji in [ready_emoji, "🔸", notready_emoji]:
-            client.add_reaction(message, emoji)
 
     def pickup_fallback(self):
         active_matches.remove(self)
