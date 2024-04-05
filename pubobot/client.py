@@ -57,12 +57,22 @@ async def send():  # send messages in queue
     global send_queue
     if len(send_queue):
         for func, kwargs in send_queue:
+            callback = kwargs.pop("callback", None)
+
             try:
-                await func(**kwargs)
+                result = await func(**kwargs)
             except Exception as e:
                 console.display(
                     "ERROR| could not send data ({0}). {1}".format(str(func), str(e))
                 )
+                continue
+
+            if callback:
+                try:
+                    callback(result)
+                except Exception as e:
+                    console.display(f"ERROR| callback {callback!r} raised {e}")
+
         send_queue = []
 
 
@@ -109,9 +119,9 @@ async def add_roles(member, *roles):
     await member.add_roles(*roles)
 
 
-def notice(channel, msg):
+def notice(channel, msg, callback=None):
     console.display("SEND| {0}> {1}".format(channel.name, msg))
-    send_queue.append([channel.send, {"content": msg}])
+    send_queue.append([channel.send, {"content": msg, "callback": callback}])
 
 
 def reply(channel, member, msg):

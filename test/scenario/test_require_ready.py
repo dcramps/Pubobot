@@ -55,15 +55,9 @@ async def test_require_ready_all_ready(pbot, pickup):
     # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
-        match = simple_match("!spawn_message {match_id}", msg.content)
+        match = ready_message_pattern.match(msg.content)
         assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit its own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    assert (match := ready_message_pattern.match(ready_msg.content))
 
     # Verify waiting on list only includes players that joined
     assert [p.id for p in players] == [
@@ -96,15 +90,9 @@ async def test_require_ready_not_ready(pbot, pickup):
     # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
-        match = simple_match("!spawn_message {match_id}", msg.content)
+        match = ready_message_pattern.match(msg.content)
         assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit it's own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    assert (match := ready_message_pattern.match(ready_msg.content))
 
     # Have at least one player react with :no_entry:
     not_ready_player = players[2]
@@ -138,15 +126,9 @@ async def test_require_ready_auto_backfill(pbot, pickup):
     # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
-        match = simple_match("!spawn_message {match_id}", msg.content)
+        match = ready_message_pattern.match(msg.content)
         assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit it's own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    assert ready_message_pattern.match(ready_msg.content)
 
     # Have an extra player join
     async with pbot.interact("!j elim", extra_player) as msg:
@@ -173,14 +155,9 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     # Should get a new ready message for updated players
     async with pbot.message() as msg:
-        assert (match := simple_match("!spawn_message {match_id}", msg.content))
+        match = ready_message_pattern.match(msg.content)
+        assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit it's own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    assert (match := ready_message_pattern.match(ready_msg.content))
 
     # Verify waiting on list only includes players that joined
     assert [extra_player.id] == [
@@ -214,15 +191,9 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     # Should get a new ready message for updated players
     async with pbot.message() as msg:
-        assert simple_match("!spawn_message {match_id}", msg.content)
+        match = ready_message_pattern.match(msg.content)
+        assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit it's own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    match = ready_message_pattern.match(ready_msg.content)
-    assert match
 
     # Since the previous players were ready before ready expiration,
     # only the player that left is required to ready
@@ -252,15 +223,9 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     # Should get a new ready message for updated players
     async with pbot.message() as msg:
-        assert simple_match("!spawn_message {match_id}", msg.content)
+        match = ready_message_pattern.match(msg.content)
+        assert match
         ready_msg = msg
-
-    # Give the bot a bit of time to edit it's own message
-    await asyncio.sleep(0.005)
-
-    # Match ready string
-    match = ready_message_pattern.match(ready_msg.content)
-    assert match
 
     # All players should be required to check in since 10 minutes have "passed"
     assert [p.id for p in players] == [
