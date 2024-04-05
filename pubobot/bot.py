@@ -733,7 +733,6 @@ class Channel:
         self.lastgame_pickup = None
         self.oldtopic = "[**no pickups**]"
         self.to_remove = []  # players
-        self.waiting_messages = dict()  # {msg_code: function}
 
     def init_pickups(self):
         pickups = stats3.get_pickups(self.id)
@@ -1011,9 +1010,6 @@ class Channel:
 
             elif lower[0] == "help":
                 self.help_answer(member, lower[1:])
-
-            elif lower[0] == "spawn_message" and member == self.guild.me:
-                self.waiting_messages.pop(msgtup[1])(msg)
 
             elif self.cfg["ranked"]:
                 if lower[0] in ["leaderboard", "lb"]:
