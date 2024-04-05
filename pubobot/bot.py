@@ -1173,7 +1173,7 @@ class Channel:
             if reason == "banned":
                 client.notice(
                     self.channel,
-                    "{0} have been removed from all pickups...".format(member.name),
+                    "{0} has been removed from all pickups".format(member.name),
                 )
             # elif reason == 'reset':
             #   if allpickups:
@@ -4272,6 +4272,7 @@ def update_member(member):  # on status change
         if str(member.status) == "offline":
             global_remove(member, "offline")
 
+
 def global_remove(member, reason):
     # removes player from pickups on all channels
     affected_channels = []
@@ -4299,7 +4300,7 @@ def global_remove(member, reason):
         elif reason == "offline":
             client.notice(
                 i.channel,
-                "**{0}** went offline and was removed from all pickups...".format(
+                "**{0}** went offline and was removed from all pickups".format(
                     member.name
                 ),
             )
