@@ -52,7 +52,6 @@ async def test_require_ready_all_ready(pbot, pickup):
 
     await pbot.get_message()
 
-    # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
         match = ready_message_pattern.match(msg.content)
@@ -87,7 +86,6 @@ async def test_require_ready_not_ready(pbot, pickup):
 
     await pbot.get_message()
 
-    # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
         match = ready_message_pattern.match(msg.content)
@@ -123,7 +121,6 @@ async def test_require_ready_auto_backfill(pbot, pickup):
 
     await pbot.get_message()
 
-    # Verify bot spits out a sentinel message, because reasons
     ready_msg = None
     async with pbot.message() as msg:
         match = ready_message_pattern.match(msg.content)
