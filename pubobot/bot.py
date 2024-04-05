@@ -2429,13 +2429,13 @@ class Channel:
     def switch_allowoffline(self, member):
         if member in allowoffline:
             allowoffline.remove(member)
-            client.reply(self.channel, member, "Your offline/afk immune is gone.")
+            client.reply(self.channel, member, "your offline immunity is gone")
         else:
             allowoffline.append(member)
             client.reply(
                 self.channel,
                 member,
-                "You will have offline/afk immune until your next pickup.",
+                "you will be immune from offline kicks until your next pickup",
             )
 
     def getstats(self, member, target):
@@ -4261,7 +4261,7 @@ def member_left(member):  # when a user left a guild
             i.update_topic()
             client.notice(
                 i.channel,
-                "**{0}** left the guild and was removed from all pickups...".format(
+                "**{0}** left the server and was removed from all pickups".format(
                     member.nick or member.name
                 ),
             )
@@ -4271,11 +4271,6 @@ def update_member(member):  # on status change
     if member not in allowoffline:
         if str(member.status) == "offline":
             global_remove(member, "offline")
-        elif str(member.status) == "idle":
-            # dont remove if user have expire time set!
-            if member.id not in scheduler.tasks.keys():
-                global_remove(member, "idle")
-
 
 def global_remove(member, reason):
     # removes player from pickups on all channels
@@ -4297,15 +4292,9 @@ def global_remove(member, reason):
     for i in affected_channels:
         i.update_topic()
         if reason == "scheduler":
-            client.reply(
-                i.channel,
-                member,
-                "you have been removed from all pickups as your !expire time ran off...",
-            )
-        elif reason == "idle":
             client.notice(
                 i.channel,
-                "<@{0}> went AFK and was removed from all pickups...".format(member.id),
+                "<@{0}> timed out and was removed from all pickups".format(member.id),
             )
         elif reason == "offline":
             client.notice(

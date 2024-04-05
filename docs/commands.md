@@ -9,7 +9,7 @@
 | `.expire time`                                     | Sets new time delay after you will be removed from all pickups, example: '.expire 1h 2m 3s'. |
 | `.default_expire time, 'afk' or 'none'`   | Set your personal default .expire time or set autoremove on afk status.                         |
 | `.sub`                                           | Request sub for last game.                                                                     |
-| `.allowoffline or .ao`                          | Gives you immunity from getting removed by offline or afk statuses until a pickup with you starts. (done for mobile devices users). |
+| `.allowoffline or .ao`                          | Gives you immunity from getting removed by offline statuses until a pickup you joined starts (done for mobile users). |
 | `.subscribe pickup[ pickup ..]]`  | Adds the promotion role of specified pickup(s) to you.                                         |
 | `.unsubscribe pickup[ pickup ..]]` | Removes the promotion role of specified pickup(s) from you.                                    |
 
